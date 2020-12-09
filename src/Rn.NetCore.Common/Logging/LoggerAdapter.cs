@@ -8,6 +8,7 @@ namespace Rn.NetCore.Common.Logging
     void Trace(string message, params object[] args);
     void Debug(string message, params object[] args);
     void Info(string message, params object[] args);
+    void Warning(string message, params object[] args);
     void Error(string message, params object[] args);
     void Error(Exception ex, string message, params object[] args);
   }
@@ -34,6 +35,11 @@ namespace Rn.NetCore.Common.Logging
     public void Info(string message, params object[] args)
     {
       _logger.LogInformation(message, args);
+    }
+
+    public void Warning(string message, params object[] args)
+    {
+      _logger.LogWarning(message, args);
     }
 
     public void Error(string message, params object[] args)
