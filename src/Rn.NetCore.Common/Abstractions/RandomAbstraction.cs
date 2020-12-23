@@ -18,7 +18,7 @@ namespace Rn.NetCore.Common.Abstractions
 
     public int Next(int minValue, int maxValue)
     {
-      return _random.Next(maxValue, maxValue);
+      return _random.Next(minValue, maxValue);
     }
   }
 }
