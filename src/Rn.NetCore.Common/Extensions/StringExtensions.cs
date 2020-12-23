@@ -10,7 +10,7 @@
         return input;
 
       if (input.EndsWith(append))
-        return append;
+        return input;
 
       return input + append;
     }
