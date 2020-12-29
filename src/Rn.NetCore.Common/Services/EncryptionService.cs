@@ -22,6 +22,7 @@ namespace Rn.NetCore.Common.Services
   public class EncryptionService : BaseService<EncryptionService>, IEncryptionService
   {
     private readonly EncryptionServiceConfig _config = new EncryptionServiceConfig();
+    public const string ConfigKey = "Rn:Encryption";
 
     public EncryptionService(
       ILogger<EncryptionService> logger,
@@ -31,16 +32,16 @@ namespace Rn.NetCore.Common.Services
     {
       // TODO: [TESTS] (EncryptionService.EncryptionService) Add tests
       // TODO: [LOGGING] (EncryptionService.EncryptionService) Add logging
-
-      
-
       // TODO: [COMPLETE] (EncryptionService) Complete this
-      if (!config.GetSection("Rn.EncryptionService").Exists())
+
+      var configSection = config.GetSection(ConfigKey);
+
+      if (!configSection.Exists())
       {
-        throw new Exception("Missing config section 'Rn.EncryptionService'");
+        throw new Exception($"Missing config section '{ConfigKey}'");
       }
 
-      config.GetSection("Rn.EncryptionService").Bind(_config);
+      configSection.Bind(_config);
     }
 
 

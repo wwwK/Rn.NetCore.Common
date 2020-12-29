@@ -5,5 +5,6 @@
     public byte[] SaltBytes { get; set; }
     public bool SuppressErrors { get; set; }
     public string DefaultPassword { get; set; }
+    // TODO: [COMPLETED] (EncryptionServiceConfig) Complete version port
   }
 }
