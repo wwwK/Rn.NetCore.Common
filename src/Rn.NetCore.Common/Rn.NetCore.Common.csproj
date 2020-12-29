@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>Rn.NetCore.Common</AssemblyName>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.0.100</Version>
+    <Company>Richard Niemand</Company>
+    <Description>Core libs for my various projects</Description>
+    <AssemblyVersion>1.0.0.100</AssemblyVersion>
+    <FileVersion>1.0.0.100</FileVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
