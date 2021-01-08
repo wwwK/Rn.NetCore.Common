@@ -1,9 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Rn.NetCore.Common.Abstractions;
 using Rn.NetCore.Common.Logging;
 using Rn.NetCore.Common.Metrics.Builders;
 using Rn.NetCore.Common.Metrics.Configuration;
+using Rn.NetCore.Common.Metrics.Interfaces;
 using Rn.NetCore.Common.Metrics.Models;
 
 namespace Rn.NetCore.Common.Metrics
@@ -20,17 +23,21 @@ namespace Rn.NetCore.Common.Metrics
   {
     private readonly ILoggerAdapter<MetricService> _logger;
     private readonly IDateTimeAbstraction _dateTime;
+    private readonly List<IMetricOutput> _outputs;
     private readonly MetricsConfig _config;
 
     public MetricService(
       ILoggerAdapter<MetricService> logger,
       IDateTimeAbstraction dateTime,
-      IConfiguration configuration)
+      IConfiguration configuration,
+      IEnumerable<IMetricOutput> outputs)
     {
+      // TODO: [TESTS] (MetricService) Add tests
       _logger = logger;
       _dateTime = dateTime;
 
       _config = MapConfiguration(configuration);
+      _outputs = outputs.Where(x => x.Enabled).ToList();
     }
 
 
