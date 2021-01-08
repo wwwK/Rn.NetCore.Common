@@ -42,11 +42,19 @@ namespace Rn.NetCore.Metrics.Rabbit
     public async Task SubmitPoint(LineProtocolPoint point)
     {
       // TODO: [TESTS] (RabbitMetricOutput.SubmitPoint) Add tests
+      if(!Enabled)
+        return;
+
+      await _connection.SubmitPoint(point);
     }
 
     public async Task SubmitPoints(List<LineProtocolPoint> points)
     {
       // TODO: [TESTS] (RabbitMetricOutput.SubmitPoints) Add tests
+      if(!Enabled)
+        return;
+
+      await _connection.SubmitPoints(points);
     }
 
     // Configuration related methods

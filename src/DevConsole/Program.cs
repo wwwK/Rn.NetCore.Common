@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -9,6 +10,7 @@ using Rn.NetCore.Common.Encryption;
 using Rn.NetCore.Common.Helpers;
 using Rn.NetCore.Common.Logging;
 using Rn.NetCore.Common.Metrics;
+using Rn.NetCore.Common.Metrics.Builders;
 using Rn.NetCore.Common.Metrics.Interfaces;
 using Rn.NetCore.Metrics.Rabbit;
 
@@ -25,6 +27,17 @@ namespace DevConsole
 
       var metrics = _serviceProvider.GetRequiredService<IMetricService>();
 
+      var builder = new MetricLineBuilder("app/dev/service")
+        .WithTag("host", Environment.MachineName)
+        .WithField("value", 10)
+        .WithField("annoyed", 100);
+
+      for (var i = 0; i < 2; i++)
+      {
+        Console.WriteLine("submitting point...");
+        metrics.SubmitPoint(builder);
+        Thread.Sleep(450);
+      }
 
       _logger.Info("Hello World!");
     }

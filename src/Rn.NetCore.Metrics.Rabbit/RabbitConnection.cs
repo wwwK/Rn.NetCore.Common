@@ -132,7 +132,7 @@ namespace Rn.NetCore.Metrics.Rabbit
     private bool CanSubmitPoints()
     {
       // TODO: [TESTS] (RabbitConnection.CanSubmitPoints) Add tests
-      if (_config.Enabled)
+      if (!_config.Enabled)
         return false;
 
       if (CurrentlyConnected())
