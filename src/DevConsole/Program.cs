@@ -25,6 +25,7 @@ namespace DevConsole
 
       var metrics = _serviceProvider.GetRequiredService<IMetricService>();
 
+
       _logger.Info("Hello World!");
     }
 
@@ -78,7 +79,8 @@ namespace DevConsole
       services
         .AddSingleton<IMetricService, MetricService>()
         .AddSingleton<IMetricOutput, RabbitMetricOutput>()
-        .AddSingleton<IRabbitConnection, RabbitConnection>();
+        .AddSingleton<IRabbitConnection, RabbitConnection>()
+        .AddSingleton<IRabbitFactory, RabbitFactory>();
     }
   }
 }

@@ -31,6 +31,11 @@ namespace Rn.NetCore.Metrics.Rabbit
 
       Enabled = _config.Enabled;
       Name = nameof(RabbitMetricOutput);
+
+      if (!Enabled)
+        return;
+
+      _connection.Configure(_config);
     }
 
     // Interface methods
