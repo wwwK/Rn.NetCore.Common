@@ -13,6 +13,8 @@ namespace Rn.NetCore.Common.Metrics
 {
   public interface IMetricService
   {
+    bool Enabled { get; }
+
     void SubmitPoint(MetricLineBuilder builder);
     Task SubmitPointAsync(MetricLineBuilder builder);
     void SubmitPoint(LineProtocolPoint point);
@@ -21,10 +23,11 @@ namespace Rn.NetCore.Common.Metrics
 
   public class MetricService : IMetricService
   {
+    public bool Enabled { get; }
+
     private readonly ILoggerAdapter<MetricService> _logger;
     private readonly IDateTimeAbstraction _dateTime;
     private readonly List<IMetricOutput> _outputs;
-    private readonly MetricsConfig _config;
 
     public const string ConfigKey = "RnCore:Metrics";
 
@@ -38,8 +41,20 @@ namespace Rn.NetCore.Common.Metrics
       _logger = logger;
       _dateTime = dateTime;
 
-      _config = MapConfiguration(configuration);
+      // Check to see if metrics are enabled
+      var config = MapConfiguration(configuration);
+      Enabled = config.Enabled;
+      if (!Enabled)
+        return;
+
+      // Check to see if there are any enabled outputs
       _outputs = outputs.Where(x => x.Enabled).ToList();
+      if (_outputs.Count > 0)
+        return;
+
+      // No enabled outputs, disabled metrics service
+      _logger.Warning("There are no enabled metric outputs, disabling metrics service");
+      Enabled = false;
     }
 
 
@@ -47,25 +62,42 @@ namespace Rn.NetCore.Common.Metrics
     public void SubmitPoint(MetricLineBuilder builder)
     {
       // TODO: [TESTS] (MetricService.SubmitPoint) Add tests
-      SubmitPointAsync(builder).ConfigureAwait(false).GetAwaiter().GetResult();
+      if (!Enabled) { return; }
+
+      SubmitPointAsync(builder)
+        .ConfigureAwait(false)
+        .GetAwaiter()
+        .GetResult();
     }
 
     public async Task SubmitPointAsync(MetricLineBuilder builder)
     {
       // TODO: [TESTS] (MetricService.SubmitPointAsync) Add tests
+      if (!Enabled) { return; }
+
       await SubmitPointAsync(builder.Build(_dateTime.UtcNow));
     }
 
     public void SubmitPoint(LineProtocolPoint point)
     {
       // TODO: [TESTS] (MetricService.SubmitPoint) Add tests
-      SubmitPointAsync(point).ConfigureAwait(false).GetAwaiter().GetResult();
+      if (!Enabled) { return; }
+
+      SubmitPointAsync(point)
+        .ConfigureAwait(false)
+        .GetAwaiter()
+        .GetResult();
     }
 
     public async Task SubmitPointAsync(LineProtocolPoint point)
     {
       // TODO: [TESTS] (MetricService.SubmitPointAsync) Add tests
-      await Task.CompletedTask;
+      if (!Enabled) { return; }
+
+      foreach (var output in _outputs)
+      {
+        await output.SubmitPoint(point);
+      }
     }
 
 

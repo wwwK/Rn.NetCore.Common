@@ -77,7 +77,8 @@ namespace DevConsole
     {
       services
         .AddSingleton<IMetricService, MetricService>()
-        .AddSingleton<IMetricOutput, RabbitMetricOutput>();
+        .AddSingleton<IMetricOutput, RabbitMetricOutput>()
+        .AddSingleton<IRabbitConnection, RabbitConnection>();
     }
   }
 }
