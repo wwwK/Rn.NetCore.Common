@@ -9,6 +9,8 @@ using Rn.NetCore.Common.Encryption;
 using Rn.NetCore.Common.Helpers;
 using Rn.NetCore.Common.Logging;
 using Rn.NetCore.Common.Metrics;
+using Rn.NetCore.Common.Metrics.Interfaces;
+using Rn.NetCore.Metrics.Rabbit;
 
 namespace DevConsole
 {
@@ -20,6 +22,8 @@ namespace DevConsole
     static void Main(string[] args)
     {
       ConfigureDI();
+
+      var metrics = _serviceProvider.GetRequiredService<IMetricService>();
 
       _logger.Info("Hello World!");
     }
@@ -37,6 +41,7 @@ namespace DevConsole
 
       ConfigureDI_Configuration(services, config);
       ConfigureDI_Core(services, config);
+      ConfigureDI_Metrics(services);
 
       _serviceProvider = services.BuildServiceProvider();
       _logger = _serviceProvider.GetService<ILoggerAdapter<Program>>();
@@ -49,7 +54,6 @@ namespace DevConsole
         .AddSingleton(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>))
         .AddSingleton<IEncryptionService, EncryptionService>()
         .AddSingleton<IEncryptionUtils, EncryptionUtils>()
-        .AddSingleton<IMetricService, MetricService>()
         .AddSingleton<IDateTimeAbstraction, DateTimeAbstraction>()
         .AddSingleton<IJsonHelper, JsonHelper>()
         .AddSingleton<IEnvironmentAbstraction, EnvironmentAbstraction>()
@@ -67,6 +71,13 @@ namespace DevConsole
     private static void ConfigureDI_Configuration(IServiceCollection services, IConfiguration config)
     {
       // Complete
+    }
+
+    private static void ConfigureDI_Metrics(IServiceCollection services)
+    {
+      services
+        .AddSingleton<IMetricService, MetricService>()
+        .AddSingleton<IMetricOutput, RabbitMetricOutput>();
     }
   }
 }

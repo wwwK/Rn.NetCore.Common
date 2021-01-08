@@ -26,6 +26,8 @@ namespace Rn.NetCore.Common.Metrics
     private readonly List<IMetricOutput> _outputs;
     private readonly MetricsConfig _config;
 
+    public const string ConfigKey = "RnCore:Metrics";
+
     public MetricService(
       ILoggerAdapter<MetricService> logger,
       IDateTimeAbstraction dateTime,
@@ -71,18 +73,21 @@ namespace Rn.NetCore.Common.Metrics
     private MetricsConfig MapConfiguration(IConfiguration configuration)
     {
       // TODO: [TESTS] (MetricService.MapConfiguration) Add tests
-      const string sectionName = "RnCore:Metrics";
-      var configSection = configuration.GetSection(sectionName);
+      var metricsConfig = new MetricsConfig();
+      var configSection = configuration.GetSection(ConfigKey);
 
-      if (!configSection.Exists())
+      if (configSection.Exists())
       {
-        _logger.Error("Unable to find configuration section {s}, metrics disabled", sectionName);
-        return new MetricsConfig();
+        configSection.Bind(metricsConfig);
+        return metricsConfig;
       }
 
-      var config = new MetricsConfig();
-      configSection.Bind(config);
-      return config;
+      _logger.Warning(
+        "Unable to find configuration section {s}, metrics disabled",
+        ConfigKey
+      );
+
+      return metricsConfig;
     }
   }
 }
