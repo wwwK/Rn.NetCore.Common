@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Rn.NetCore.Common\Rn.NetCore.Common.csproj" />
+    <ProjectReference Include="..\Rn.NetCore.Metrics.Rabbit\Rn.NetCore.Metrics.Rabbit.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevConsole", "DevConsole\De
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{28A63668-92E2-472A-BC61-14DF2941B5F4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rn.NetCore.Metrics.Rabbit", "Rn.NetCore.Metrics.Rabbit\Rn.NetCore.Metrics.Rabbit.csproj", "{ACF14E7F-1F4A-4F83-BE16-3495C8B6D68F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,12 +25,17 @@ Global
 		{042550C9-F850-41C2-A891-DEAD54332BE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{042550C9-F850-41C2-A891-DEAD54332BE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{042550C9-F850-41C2-A891-DEAD54332BE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACF14E7F-1F4A-4F83-BE16-3495C8B6D68F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACF14E7F-1F4A-4F83-BE16-3495C8B6D68F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACF14E7F-1F4A-4F83-BE16-3495C8B6D68F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACF14E7F-1F4A-4F83-BE16-3495C8B6D68F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7870B466-C59D-4CE8-8B05-8C2F5F126BA3} = {28A63668-92E2-472A-BC61-14DF2941B5F4}
+		{ACF14E7F-1F4A-4F83-BE16-3495C8B6D68F} = {28A63668-92E2-472A-BC61-14DF2941B5F4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3DDD2D7A-577F-404C-8A03-B9BAC32B80ED}
