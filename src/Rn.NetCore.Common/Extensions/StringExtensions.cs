@@ -1,4 +1,6 @@
-﻿namespace Rn.NetCore.Common.Extensions
+﻿using System;
+
+namespace Rn.NetCore.Common.Extensions
 {
   public static class StringExtensions
   {
@@ -66,6 +68,18 @@
       }
 
       return fallback;
+    }
+
+    public static bool IgnoreCaseEquals(this string value, string compare)
+    {
+      // TODO: [TESTS] (StringExtensions.IgnoreCaseEquals) Add tests
+      return value.Equals(compare, StringComparison.InvariantCultureIgnoreCase);
+    }
+
+    public static bool IgnoreCaseContains(this string value, string contains)
+    {
+      // TODO: [TESTS] (StringExtensions.IgnoreCaseContains) Add tests
+      return value.Contains(contains, StringComparison.InvariantCultureIgnoreCase);
     }
   }
 }

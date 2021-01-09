@@ -8,7 +8,7 @@ namespace Rn.NetCore.Common.Metrics.Models
   // FROM: https://github.com/influxdata/influxdb-csharp
   public class LineProtocolPoint
   {
-    public string Measurement { get; }
+    public string Measurement { get; private set; }
     public IReadOnlyDictionary<string, object> Fields { get; }
     public IReadOnlyDictionary<string, string> Tags { get; }
     public DateTime? UtcTimestamp { get; }
@@ -30,6 +30,14 @@ namespace Rn.NetCore.Common.Metrics.Models
       Fields = fields;
       Tags = tags;
       UtcTimestamp = utcTimestamp;
+    }
+
+    
+    // Public methods
+    public void ReplaceMeasurement(string measurement)
+    {
+      // TODO: [TESTS] (LineProtocolPoint.ReplaceMeasurement) Add tests
+      Measurement = measurement;
     }
 
     public void Format(TextWriter textWriter)
