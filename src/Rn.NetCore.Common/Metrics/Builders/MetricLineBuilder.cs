@@ -21,6 +21,65 @@ namespace Rn.NetCore.Common.Metrics.Builders
       UtcTimestamp = null;
     }
 
+
+    // Builder methods
+    public MetricLineBuilder WithTag(string name, string value, bool skipToLower = false)
+    {
+      // TODO: [TESTS] (MetricLineBuilder.WithTag) Add tests
+      Tags[MetricUtils.CleanTagName(name)] = MetricUtils.CleanTagValue(value, skipToLower);
+      return this;
+    }
+
+    public MetricLineBuilder WithTag(string name, int value)
+    {
+      // TODO: [TESTS] (MetricLineBuilder.WithTag) Add tests
+      Tags[MetricUtils.CleanTagName(name)] = value.ToString("D");
+      return this;
+    }
+
+    public MetricLineBuilder WithTag(string name, long value)
+    {
+      // TODO: [TESTS] (MetricLineBuilder.WithTag) Add tests
+      Tags[MetricUtils.CleanTagName(name)] = value.ToString("D");
+      return this;
+    }
+
+    public MetricLineBuilder WithTag(string name, bool value)
+    {
+      // TODO: [TESTS] (MetricLineBuilder.WithTag) Add tests
+      Tags[MetricUtils.CleanTagName(name)] = value ? "true" : "false";
+      return this;
+    }
+
+    public MetricLineBuilder WithField(string name, double value)
+    {
+      // TODO: [TESTS] (MetricLineBuilder.WithField) Add tests
+      Fields[MetricUtils.CleanFieldName(name)] = value;
+      return this;
+    }
+
+    public MetricLineBuilder WithField(string name, int value)
+    {
+      // TODO: [TESTS] (MetricLineBuilder.WithField) Add tests
+      Fields[MetricUtils.CleanFieldName(name)] = value;
+      return this;
+    }
+
+    public MetricLineBuilder WithField(string name, long value)
+    {
+      // TODO: [TESTS] (MetricLineBuilder.WithField) Add tests
+      Fields[MetricUtils.CleanFieldName(name)] = value;
+      return this;
+    }
+
+    public MetricLineBuilder WithField(string name, bool value)
+    {
+      // TODO: [TESTS] (MetricLineBuilder.WithField) Add tests
+      Fields[MetricUtils.CleanFieldName(name)] = value;
+      return this;
+    }
+
+
     // Build()
     public LineProtocolPoint Build(DateTime? utcTimestamp = null)
     {
