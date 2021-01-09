@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
+using Rn.NetCore.Common.Abstractions;
 using Rn.NetCore.Common.Logging;
 using Rn.NetCore.Common.Metrics.Models;
 using Rn.NetCore.Metrics.Rabbit.Config;
@@ -21,20 +22,33 @@ namespace Rn.NetCore.Metrics.Rabbit
   {
     private readonly ILoggerAdapter<RabbitConnection> _logger;
     private readonly IRabbitFactory _rabbitFactory;
+    private readonly IDateTimeAbstraction _dateTime;
 
     private RabbitOutputConfig _config;
     private IConnectionFactory _connectionFactory;
     private IConnection _connection;
+    private bool _connectionEnabled;
     private IModel _channel;
+
+    private DateTime? _disabledUntil;
+    private int _connectionErrorCount;
+    private int _coolDownRunCount;
 
     public RabbitConnection(
       ILoggerAdapter<RabbitConnection> logger,
-      IRabbitFactory rabbitFactory)
+      IRabbitFactory rabbitFactory,
+      IDateTimeAbstraction dateTime)
     {
       // TODO: [TESTS] (RabbitConnection) Add tests
       _logger = logger;
       _rabbitFactory = rabbitFactory;
+      _dateTime = dateTime;
       _config = new RabbitOutputConfig();
+
+      _connectionEnabled = _config.Enabled;
+      _disabledUntil = null;
+      _connectionErrorCount = 0;
+      _coolDownRunCount = 0;
     }
 
 
@@ -43,6 +57,7 @@ namespace Rn.NetCore.Metrics.Rabbit
     {
       // TODO: [TESTS] (RabbitConnection.Configure) Add tests
       _config = config;
+      _connectionEnabled = config.Enabled;
 
       // Ensure that we are enabled
       if (!_config.Enabled)
@@ -111,10 +126,12 @@ namespace Rn.NetCore.Metrics.Rabbit
       {
         _connection = _connectionFactory.CreateConnection();
         _channel = _connection.CreateModel();
+        HandleConnectionSuccess();
       }
       catch (Exception ex)
       {
         _logger.LogUnexpectedException(ex);
+        HandleConnectionError();
       }
     }
 
@@ -132,9 +149,24 @@ namespace Rn.NetCore.Metrics.Rabbit
     private bool CanSubmitPoints()
     {
       // TODO: [TESTS] (RabbitConnection.CanSubmitPoints) Add tests
+      // Check to see if we have been disabled via "HandleMaxCoolDownRuns()"
+      if (!_connectionEnabled)
+        return false;
+
+      // Check to see if we have been globally disabled somehow
       if (!_config.Enabled)
         return false;
 
+      // Check to see if we are currently in a "cooldown" or "back-off" loop
+      if (_disabledUntil.HasValue)
+      {
+        if (_dateTime.Now < _disabledUntil.Value)
+          return false;
+
+        _disabledUntil = null;
+      }
+
+      // Check the current connection state (attempt a reconnection if required)
       if (CurrentlyConnected())
         return true;
 
@@ -163,17 +195,86 @@ namespace Rn.NetCore.Metrics.Rabbit
 
       try
       {
-        _channel.BasicPublish(
+        _channel?.BasicPublish(
           exchange: _config.Exchange,
           routingKey: _config.RoutingKey,
           basicProperties: null,
           body: Encoding.UTF8.GetBytes(GeneratePayload(points))
         );
+
+        HandleConnectionSuccess();
       }
       catch (Exception ex)
       {
         _logger.LogUnexpectedException(ex);
+        HandleConnectionError();
       }
+    }
+
+
+    // Backing-off related methods
+    private void HandleConnectionSuccess()
+    {
+      // TODO: [TESTS] (RabbitConnection.HandleConnectionSuccess) Add tests
+      _disabledUntil = null;
+      _connectionErrorCount = 0;
+      _coolDownRunCount = 0;
+    }
+
+    private void HandleConnectionError()
+    {
+      // TODO: [TESTS] (RabbitConnection.HandleConnectionError) Add tests
+      _connectionErrorCount += 1;
+
+      // Enter cooldown if we hit the configured threshold
+      if (_connectionErrorCount >= _config.CoolDownThreshold)
+      {
+        HandleCoolDown();
+        return;
+      }
+
+      // Temporarily disable the connection for a few seconds
+      _disabledUntil = _dateTime.Now.AddSeconds(_config.BackOffTimeSec);
+
+      _logger.Info(
+        "Backing off Rabbit connection for {s} second(s), will try again at {d}",
+        _config.BackOffTimeSec,
+        _disabledUntil
+      );
+    }
+
+    private void HandleCoolDown()
+    {
+      // TODO: [TESTS] (RabbitConnection.HandleCoolDown) Add tests
+      _connectionErrorCount = 0;
+      _coolDownRunCount += 1;
+
+      // If configured, and hit - disable the connection after "x" cooldown runs
+      if (_config.MaxCoolDownRuns > 0 && _coolDownRunCount > _config.MaxCoolDownRuns)
+      {
+        HandleMaxCoolDownRuns();
+        return;
+      }
+
+      // Enter into a cooldown in hopes that the RabbitMQ connection will come back
+      _disabledUntil = _dateTime.Now.AddSeconds(_config.CoolDownTimeSec);
+
+      _logger.Warning(
+        "Failed to communicate with RabbitMQ {x} time(s) in a row - backing off until {d}",
+        _config.CoolDownThreshold,
+        _disabledUntil
+      );
+    }
+
+    private void HandleMaxCoolDownRuns()
+    {
+      // TODO: [TESTS] (RabbitConnection.HandleMaxCoolDownRuns) Add tests
+      _logger.Error("It seems that we are unable to connect to RabbitMQ, disabling output");
+
+      _connectionEnabled = false;
+      _connectionErrorCount = 0;
+      _coolDownRunCount = 0;
+      _disabledUntil = null;
     }
   }
 }

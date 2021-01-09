@@ -32,11 +32,11 @@ namespace DevConsole
         .WithField("value", 10)
         .WithField("annoyed", 100);
 
-      for (var i = 0; i < 2; i++)
+      for (var i = 0; i < 200; i++)
       {
         Console.WriteLine("submitting point...");
         metrics.SubmitPoint(builder);
-        Thread.Sleep(450);
+        Thread.Sleep(1000);
       }
 
       _logger.Info("Hello World!");

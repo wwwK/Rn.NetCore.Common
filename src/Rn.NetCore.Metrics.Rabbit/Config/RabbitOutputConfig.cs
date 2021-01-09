@@ -29,6 +29,18 @@ namespace Rn.NetCore.Metrics.Rabbit.Config
     [JsonProperty("RoutingKey"), JsonPropertyName("RoutingKey")]
     public string RoutingKey { get; set; }
 
+    [JsonProperty("BackOffTimeSec"), JsonPropertyName("BackOffTimeSec")]
+    public int BackOffTimeSec { get; set; }
+
+    [JsonProperty("CoolDownTimeSec"), JsonPropertyName("CoolDownTimeSec")]
+    public int CoolDownTimeSec { get; set; }
+
+    [JsonProperty("CoolDownThreshold"), JsonPropertyName("CoolDownThreshold")]
+    public int CoolDownThreshold { get; set; }
+
+    [JsonProperty("MaxCoolDownRuns"), JsonPropertyName("MaxCoolDownRuns")]
+    public int MaxCoolDownRuns { get; set; }
+
     public RabbitOutputConfig()
     {
       // TODO: [TESTS] (RabbitOutputConfig) Add tests
@@ -40,6 +52,10 @@ namespace Rn.NetCore.Metrics.Rabbit.Config
       Port = 5672;
       Exchange = "amq.topic";
       RoutingKey = "rn_core.metrics";
+      BackOffTimeSec = 15;
+      CoolDownTimeSec = 300;
+      CoolDownThreshold = 3;
+      MaxCoolDownRuns = 0;
     }
   }
 }
