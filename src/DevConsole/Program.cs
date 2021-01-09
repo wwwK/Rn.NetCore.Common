@@ -25,19 +25,18 @@ namespace DevConsole
     {
       ConfigureDI();
 
-      var metrics = _serviceProvider.GetRequiredService<IMetricService>();
+      var builder = new RepoMetricBuilder("Repo", "Method", "Command")
+        .ForConnection("Connection")
+        .WithHasParams(true)
+        .WithCustomTag1("kittens");
 
-      var builder = new MetricLineBuilder("app/dev/service")
-        .WithTag("host", Environment.MachineName)
-        .WithField("value", 10)
-        .WithField("annoyed", 100);
-
-      for (var i = 0; i < 200; i++)
+      IMetricService metrics;
+      using (builder.WithTiming())
       {
-        Console.WriteLine("submitting point...");
-        metrics.SubmitPoint(builder);
-        Thread.Sleep(1000);
+        metrics = _serviceProvider.GetRequiredService<IMetricService>();
       }
+
+      metrics.SubmitPoint(builder.Build());
 
       _logger.Info("Hello World!");
     }
