@@ -13,7 +13,7 @@ namespace Rn.NetCore.Common.Metrics.Builders
     public DateTime? UtcTimestamp { get; set; }
 
     private readonly List<int> _customInt = new List<int> { 0, 0, 0, 0, 0, 0 };
-    private int _resultsCount = 0;
+    private int _resultsCount, _queryCount;
 
     // Constructors
     protected BaseMetricLineBuilder(string measurement, MetricSource source)
@@ -42,6 +42,7 @@ namespace Rn.NetCore.Common.Metrics.Builders
         {CoreMetricField.Value, (long) 0},
         {CoreMetricField.CallCount, 1},
         {"result_count", 0},
+        {"query_count", 0},
         {"custom_timing1", (long) 0},
         {"custom_timing2", (long) 0},
         {"custom_timing3", (long) 0},
@@ -125,6 +126,20 @@ namespace Rn.NetCore.Common.Metrics.Builders
       WithTag("has_exception", true);
       WithTag("exception_name", ex.GetType().Name, true);
 
+      return this;
+    }
+
+    public BaseMetricLineBuilder IncrementQueryCount(int amount = 1)
+    {
+      // TODO: [TESTS] (BaseMetricLineBuilder.IncrementQueryCount) Add tests
+      _queryCount += amount;
+      return this;
+    }
+
+    public BaseMetricLineBuilder WithQueryCount(int queryCount)
+    {
+      // TODO: [TESTS] (BaseMetricLineBuilder.WithQueryCount) Add tests
+      _queryCount = queryCount;
       return this;
     }
 
@@ -456,6 +471,7 @@ namespace Rn.NetCore.Common.Metrics.Builders
       Fields["custom_int4"] = _customInt[3];
       Fields["custom_int5"] = _customInt[4];
       Fields["custom_int6"] = _customInt[5];
+      Fields["query_count"] = _queryCount;
       Fields["result_count"] = _resultsCount;
 
       return new LineProtocolPoint(Measurement, Fields, Tags, UtcTimestamp);
