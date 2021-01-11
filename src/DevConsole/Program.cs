@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -10,7 +9,6 @@ using Rn.NetCore.Common.Encryption;
 using Rn.NetCore.Common.Helpers;
 using Rn.NetCore.Common.Logging;
 using Rn.NetCore.Common.Metrics;
-using Rn.NetCore.Common.Metrics.Builders;
 using Rn.NetCore.Common.Metrics.Interfaces;
 using Rn.NetCore.Metrics.Rabbit;
 
@@ -24,19 +22,6 @@ namespace DevConsole
     static void Main(string[] args)
     {
       ConfigureDI();
-
-      var builder = new ServiceMetricBuilder("Service", "Method")
-        .WithCategory("Cat", "SubCat")
-        .WithCustomTag1("kittens")
-        .WithCustomTag2("tag 2");
-
-      IMetricService metrics;
-      using (builder.WithTiming())
-      {
-        metrics = _serviceProvider.GetRequiredService<IMetricService>();
-      }
-
-      metrics.SubmitPoint(builder);
 
       _logger.Info("Hello World!");
     }
