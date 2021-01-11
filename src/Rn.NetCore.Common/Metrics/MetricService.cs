@@ -18,8 +18,8 @@ namespace Rn.NetCore.Common.Metrics
   {
     bool Enabled { get; }
 
-    void SubmitPoint(MetricLineBuilder builder);
-    Task SubmitPointAsync(MetricLineBuilder builder);
+    void SubmitPoint(BaseMetricLineBuilder builder);
+    Task SubmitPointAsync(BaseMetricLineBuilder builder);
     void SubmitPoint(LineProtocolPoint point);
     Task SubmitPointAsync(LineProtocolPoint point);
   }
@@ -68,7 +68,7 @@ namespace Rn.NetCore.Common.Metrics
 
 
     // Interface methods
-    public void SubmitPoint(MetricLineBuilder builder)
+    public void SubmitPoint(BaseMetricLineBuilder builder)
     {
       // TODO: [TESTS] (MetricService.SubmitPoint) Add tests
       if (!Enabled) { return; }
@@ -79,11 +79,12 @@ namespace Rn.NetCore.Common.Metrics
         .GetResult();
     }
 
-    public async Task SubmitPointAsync(MetricLineBuilder builder)
+    public async Task SubmitPointAsync(BaseMetricLineBuilder builder)
     {
       // TODO: [TESTS] (MetricService.SubmitPointAsync) Add tests
       if (!Enabled) { return; }
 
+      builder.FinalizeBuilder();
       await SubmitPointAsync(builder.Build(_dateTime.UtcNow));
     }
 

@@ -14,10 +14,10 @@ namespace Rn.NetCore.Common.Metrics.Models
   {
     public string FieldName { get; private set; }
 
-    private readonly MetricLineBuilder _builder;
+    private readonly BaseMetricLineBuilder _builder;
     private readonly Stopwatch _stopwatch;
 
-    public MetricTimingToken(MetricLineBuilder builder, string fieldName)
+    public MetricTimingToken(BaseMetricLineBuilder builder, string fieldName)
     {
       _builder = builder;
       FieldName = fieldName;

@@ -26,6 +26,7 @@ namespace DevConsole
       ConfigureDI();
 
       var builder = new ServiceMetricBuilder("Service", "Method")
+        .WithCategory("Cat", "SubCat")
         .WithCustomTag1("kittens")
         .WithCustomTag2("tag 2");
 
@@ -35,7 +36,7 @@ namespace DevConsole
         metrics = _serviceProvider.GetRequiredService<IMetricService>();
       }
 
-      metrics.SubmitPoint(builder.Build());
+      metrics.SubmitPoint(builder);
 
       _logger.Info("Hello World!");
     }
