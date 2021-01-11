@@ -454,6 +454,13 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
+    public BaseMetricLineBuilder IncrementResultCount(int amount = 1)
+    {
+      // TODO: [TESTS] (BaseMetricLineBuilder.IncrementResultCount) Add tests
+      _resultsCount += amount;
+      return this;
+    }
+
 
     // Build()
     public LineProtocolPoint Build(DateTime? utcTimestamp = null)
