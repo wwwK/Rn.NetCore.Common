@@ -26,21 +26,21 @@ namespace Rn.NetCore.Common.Metrics.Builders
         .WithTag("succeeded", true)
         .WithTag("has_exception", false)
         .WithTag("exception_name", string.Empty)
-        .WithTag("custom_tag_1", string.Empty)
-        .WithTag("custom_tag_2", string.Empty)
-        .WithTag("custom_tag_3", string.Empty)
-        .WithField(CoreMetricField.Value, (long) 0)
+        .WithTag("custom_tag1", string.Empty)
+        .WithTag("custom_tag2", string.Empty)
+        .WithTag("custom_tag3", string.Empty)
+        .WithField(CoreMetricField.Value, (long)0)
         .WithField(CoreMetricField.CallCount, 1)
         .WithField("row_count", 0)
-        .WithField("custom_timing_1", (long) 0)
-        .WithField("custom_timing_2", (long) 0)
-        .WithField("custom_timing_3", (long) 0)
-        .WithField("custom_int_1", 0)
-        .WithField("custom_int_2", 0)
-        .WithField("custom_int_3", 0)
-        .WithField("custom_double_1", (double) 0)
-        .WithField("custom_double_2", (double) 0)
-        .WithField("custom_double_3", (double) 0);
+        .WithField("custom_timing1", (long)0)
+        .WithField("custom_timing2", (long)0)
+        .WithField("custom_timing3", (long)0)
+        .WithField("custom_int1", 0)
+        .WithField("custom_int2", 0)
+        .WithField("custom_int3", 0)
+        .WithField("custom_double1", (double)0)
+        .WithField("custom_double2", (double)0)
+        .WithField("custom_double3", (double)0);
     }
 
     public RepoMetricBuilder(string repoName, string repoMethod, string commandType, bool skipToLower = true)
@@ -107,87 +107,87 @@ namespace Rn.NetCore.Common.Metrics.Builders
     public RepoMetricBuilder WithCustomTag1(string value, bool skipToLower = false)
     {
       // TODO: [TESTS] (RepoMetricBuilder.WithCustomTag1) Add tests
-      _builder.WithTag("custom_tag_1", value, skipToLower);
+      _builder.WithTag("custom_tag1", value, skipToLower);
       return this;
     }
 
     public RepoMetricBuilder WithCustomTag2(string value, bool skipToLower = false)
     {
       // TODO: [TESTS] (RepoMetricBuilder.WithCustomTag2) Add tests
-      _builder.WithTag("custom_tag_2", value, skipToLower);
+      _builder.WithTag("custom_tag2", value, skipToLower);
       return this;
     }
 
     public RepoMetricBuilder WithCustomTag3(string value, bool skipToLower = false)
     {
       // TODO: [TESTS] (RepoMetricBuilder.WithCustomTag3) Add tests
-      _builder.WithTag("custom_tag_3", value, skipToLower);
+      _builder.WithTag("custom_tag3", value, skipToLower);
       return this;
     }
 
     public IMetricTimingToken WithTiming()
     {
       // TODO: [TESTS] (RepoMetricBuilder.WithTiming) Add tests
-      return new MetricTimingToken(_builder, CoreMetricField.Value);
+      return _builder.WithTiming(CoreMetricField.Value);
     }
 
     public IMetricTimingToken WithCustomTiming1()
     {
       // TODO: [TESTS] (RepoMetricBuilder.WithCustomTiming1) Add tests
-      return new MetricTimingToken(_builder, "custom_timing_1");
+      return _builder.WithTiming("custom_timing1");
     }
 
     public IMetricTimingToken WithCustomTiming2()
     {
       // TODO: [TESTS] (RepoMetricBuilder.WithCustomTiming2) Add tests
-      return new MetricTimingToken(_builder, "custom_timing_2");
+      return _builder.WithTiming("custom_timing2");
     }
 
     public IMetricTimingToken WithCustomTiming3()
     {
       // TODO: [TESTS] (RepoMetricBuilder.WithCustomTiming3) Add tests
-      return new MetricTimingToken(_builder, "custom_timing_3");
+      return _builder.WithTiming("custom_timing3");
     }
 
     public RepoMetricBuilder WithCustomInt1(int value)
     {
       // TODO: [TESTS] (RepoMetricBuilder.WithCustomInt1) Add tests
-      _builder.WithField("custom_int_1", value);
+      _builder.WithField("custom_int1", value);
       return this;
     }
 
     public RepoMetricBuilder WithCustomInt2(int value)
     {
       // TODO: [TESTS] (RepoMetricBuilder.WithCustomInt2) Add tests
-      _builder.WithField("custom_int_2", value);
+      _builder.WithField("custom_int2", value);
       return this;
     }
 
     public RepoMetricBuilder WithCustomInt3(int value)
     {
       // TODO: [TESTS] (RepoMetricBuilder.WithCustomInt3) Add tests
-      _builder.WithField("custom_int_3", value);
+      _builder.WithField("custom_int3", value);
       return this;
     }
 
     public RepoMetricBuilder WithCustomDouble1(double value)
     {
       // TODO: [TESTS] (RepoMetricBuilder.WithCustomDouble1) Add tests
-      _builder.WithField("custom_double_1", value);
+      _builder.WithField("custom_double1", value);
       return this;
     }
 
     public RepoMetricBuilder WithCustomDouble2(double value)
     {
       // TODO: [TESTS] (RepoMetricBuilder.WithCustomDouble2) Add tests
-      _builder.WithField("custom_double_2", value);
+      _builder.WithField("custom_double2", value);
       return this;
     }
 
     public RepoMetricBuilder WithCustomDouble3(double value)
     {
       // TODO: [TESTS] (RepoMetricBuilder.WithCustomDouble3) Add tests
-      _builder.WithField("custom_double_3", value);
+      _builder.WithField("custom_double3", value);
       return this;
     }
 

@@ -2,6 +2,7 @@
 {
   public enum MetricSource
   {
-    RepoCall
+    RepoCall,
+    ServiceCall
   }
 }

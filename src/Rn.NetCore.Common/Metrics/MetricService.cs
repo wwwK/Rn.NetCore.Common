@@ -123,6 +123,9 @@ namespace Rn.NetCore.Common.Metrics
       if (safeSource.IgnoreCaseEquals(MetricSource.RepoCall.ToString("G")))
         return "repo_call";
 
+      if (safeSource.IgnoreCaseEquals(MetricSource.ServiceCall.ToString("G")))
+        return "service_call";
+
       // Unknown / Unhandled metric source
       _logger.Warning("Unable to resolve '{type}' to known measurement - using {final}",
         point.Tags[CoreMetricTag.Source],
@@ -216,6 +219,7 @@ namespace Rn.NetCore.Common.Metrics
 
       // Ensure that all "MetricSource" values have an associated template
       SetMeasurement(config, MetricSource.RepoCall, "repo_call");
+      SetMeasurement(config, MetricSource.ServiceCall, "service_call");
     }
 
     private static void SetMeasurement(MetricsConfig config, MetricSource source, string builderType)

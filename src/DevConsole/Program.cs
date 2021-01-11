@@ -25,10 +25,9 @@ namespace DevConsole
     {
       ConfigureDI();
 
-      var builder = new RepoMetricBuilder("Repo", "Method", "Command")
-        .ForConnection("Connection")
-        .WithHasParams(true)
-        .WithCustomTag1("kittens");
+      var builder = new ServiceMetricBuilder("Service", "Method")
+        .WithCustomTag1("kittens")
+        .WithCustomTag2("tag 2");
 
       IMetricService metrics;
       using (builder.WithTiming())

@@ -79,6 +79,15 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
+    public IMetricTimingToken WithTiming(string name = null)
+    {
+      // TODO: [TESTS] (MetricLineBuilder.WithTiming) Add tests
+      if (string.IsNullOrWhiteSpace(name))
+        name = "value";
+
+      return new MetricTimingToken(this, name);
+    }
+
 
     // Build()
     public LineProtocolPoint Build(DateTime? utcTimestamp = null)
