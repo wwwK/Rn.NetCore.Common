@@ -84,7 +84,6 @@ namespace Rn.NetCore.Common.Metrics
       // TODO: [TESTS] (MetricService.SubmitPointAsync) Add tests
       if (!Enabled) { return; }
 
-      builder.FinalizeBuilder();
       await SubmitPointAsync(builder.Build(_dateTime.UtcNow));
     }
 

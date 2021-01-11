@@ -441,8 +441,6 @@ namespace Rn.NetCore.Common.Metrics.Builders
 
 
     // Build()
-    public virtual void FinalizeBuilder() { }
-
     public LineProtocolPoint Build(DateTime? utcTimestamp = null)
     {
       // TODO: [TESTS] (MetricLineBuilder.Build) Add tests
