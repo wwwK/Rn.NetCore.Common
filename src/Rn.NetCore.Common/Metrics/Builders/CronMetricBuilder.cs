@@ -73,9 +73,9 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
-    public CronMetricBuilder WithClassification(string category, string subCategory, bool useGivenCasing = true)
+    public CronMetricBuilder WithCategory(string category, string subCategory, bool useGivenCasing = true)
     {
-      // TODO: [TESTS] (CronMetricBuilder.WithClassification) Add tests
+      // TODO: [TESTS] (CronMetricBuilder.WithCategory) Add tests
       _builder
         .WithTag(Tags.Category, category, useGivenCasing)
         .WithTag(Tags.SubCategory, subCategory, useGivenCasing);
