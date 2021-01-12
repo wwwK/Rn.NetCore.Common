@@ -80,10 +80,16 @@ namespace Rn.NetCore.Common.Metrics.Builders
 
 
     // Helper methods
-    public void WithCustomTag(int tagNumber, object value, bool skipToLower = false)
+    public void WithCustomTag(int number, object value, bool skipToLower = false)
     {
       // TODO: [TESTS] (MetricBuilder.WithCustomTag) Add tests
-      WithTag($"custom_tag{tagNumber}", CastTagValue(value), skipToLower);
+      WithTag($"custom_tag{number}", CastTagValue(value), skipToLower);
+    }
+
+    public void WithCustomInt(int number, int value)
+    {
+      // TODO: [TESTS] (MetricBuilder.WithCustomInt) Add tests
+      WithField($"custom_int{number}", value);
     }
 
     public void WithException(Exception ex)

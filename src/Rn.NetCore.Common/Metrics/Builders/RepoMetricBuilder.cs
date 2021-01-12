@@ -22,11 +22,6 @@ namespace Rn.NetCore.Common.Metrics.Builders
     {
       public const string QueryCount = "query_count";
       public const string ResultsCount = "results_count";
-      public const string CustomTiming1 = "custom_timing1";
-      public const string CustomTiming2 = "custom_timing2";
-      public const string CustomTiming3 = "custom_timing3";
-      public const string CustomTiming4 = "custom_timing4";
-      public const string CustomTiming5 = "custom_timing5";
     }
 
     // Constructors
@@ -51,11 +46,11 @@ namespace Rn.NetCore.Common.Metrics.Builders
         // Fields
         .WithField(Fields.QueryCount, 0)
         .WithField(Fields.ResultsCount, 0)
-        .WithField(Fields.CustomTiming1, (long) 0)
-        .WithField(Fields.CustomTiming2, (long) 0)
-        .WithField(Fields.CustomTiming3, (long) 0)
-        .WithField(Fields.CustomTiming4, (long) 0)
-        .WithField(Fields.CustomTiming5, (long) 0);
+        .WithField(CoreMetricField.CustomTiming1, (long) 0)
+        .WithField(CoreMetricField.CustomTiming2, (long) 0)
+        .WithField(CoreMetricField.CustomTiming3, (long) 0)
+        .WithField(CoreMetricField.CustomTiming4, (long) 0)
+        .WithField(CoreMetricField.CustomTiming5, (long) 0);
     }
 
     public RepoMetricBuilder(string repoName, string repoMethod, string commandType, bool skipToLower = true)
@@ -146,31 +141,31 @@ namespace Rn.NetCore.Common.Metrics.Builders
     public IMetricTimingToken WithCustomTiming1()
     {
       // TODO: [TESTS] (RepoMetricBuilder.WithCustomTiming1) Add tests
-      return _builder.WithTiming(Fields.CustomTiming1);
+      return _builder.WithTiming(CoreMetricField.CustomTiming1);
     }
 
     public IMetricTimingToken WithCustomTiming2()
     {
       // TODO: [TESTS] (RepoMetricBuilder.WithCustomTiming2) Add tests
-      return _builder.WithTiming(Fields.CustomTiming2);
+      return _builder.WithTiming(CoreMetricField.CustomTiming2);
     }
 
     public IMetricTimingToken WithCustomTiming3()
     {
       // TODO: [TESTS] (RepoMetricBuilder.WithCustomTiming3) Add tests
-      return _builder.WithTiming(Fields.CustomTiming3);
+      return _builder.WithTiming(CoreMetricField.CustomTiming3);
     }
 
     public IMetricTimingToken WithCustomTiming4()
     {
       // TODO: [TESTS] (RepoMetricBuilder.WithCustomTiming4) Add tests
-      return _builder.WithTiming(Fields.CustomTiming4);
+      return _builder.WithTiming(CoreMetricField.CustomTiming4);
     }
 
     public IMetricTimingToken WithCustomTiming5()
     {
       // TODO: [TESTS] (RepoMetricBuilder.WithCustomTiming5) Add tests
-      return _builder.WithTiming(Fields.CustomTiming5);
+      return _builder.WithTiming(CoreMetricField.CustomTiming5);
     }
 
 
