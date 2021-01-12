@@ -9,6 +9,7 @@ using Rn.NetCore.Common.Encryption;
 using Rn.NetCore.Common.Helpers;
 using Rn.NetCore.Common.Logging;
 using Rn.NetCore.Common.Metrics;
+using Rn.NetCore.Common.Metrics.Builders;
 using Rn.NetCore.Common.Metrics.Interfaces;
 using Rn.NetCore.Metrics.Rabbit;
 
@@ -22,6 +23,16 @@ namespace DevConsole
     static void Main(string[] args)
     {
       ConfigureDI();
+
+      var builder = new RepoMetricBuilder("Repo", "Method", "Command")
+        .ForConnection("MyConnection")
+        .WithParameters(1)
+        .WithCustomTag1(true)
+        .WithCustomTag2(1)
+        .WithCustomTag3((long) 1)
+        .WithCustomTag4("hello")
+        .WithCustomTag5(DateTime.Now)
+        .Build();
 
       _logger.Info("Hello World!");
     }
