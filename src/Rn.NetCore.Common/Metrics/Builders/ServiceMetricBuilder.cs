@@ -40,16 +40,19 @@ namespace Rn.NetCore.Common.Metrics.Builders
         .WithTag(CoreMetricTag.CustomTag4, string.Empty)
         .WithTag(CoreMetricTag.CustomTag5, string.Empty)
         // Fields
-        .WithField(CoreMetricField.CustomTiming1, (long) 0)
-        .WithField(CoreMetricField.CustomTiming2, (long) 0)
-        .WithField(CoreMetricField.CustomTiming3, (long) 0)
-        .WithField(CoreMetricField.CustomTiming4, (long) 0)
-        .WithField(CoreMetricField.CustomTiming5, (long) 0)
+        .WithField(CoreMetricField.CustomTiming1, (long)0)
+        .WithField(CoreMetricField.CustomTiming2, (long)0)
+        .WithField(CoreMetricField.CustomTiming3, (long)0)
+        .WithField(CoreMetricField.CustomTiming4, (long)0)
+        .WithField(CoreMetricField.CustomTiming5, (long)0)
         .WithField(CoreMetricField.CustomInt1, 0)
         .WithField(CoreMetricField.CustomInt2, 0)
         .WithField(CoreMetricField.CustomInt3, 0)
         .WithField(CoreMetricField.CustomInt4, 0)
         .WithField(CoreMetricField.CustomInt5, 0)
+        .WithField(CoreMetricField.CustomLong1, (long)0)
+        .WithField(CoreMetricField.CustomLong2, (long)0)
+        .WithField(CoreMetricField.CustomLong3, (long)0)
         .WithField(Fields.QueryCount, 0)
         .WithField(Fields.ResultsCount, 0);
     }
@@ -159,6 +162,28 @@ namespace Rn.NetCore.Common.Metrics.Builders
     {
       // TODO: [TESTS] (ServiceMetricBuilder.WithCustomInt5) Add tests
       _builder.WithCustomInt(5, value);
+      return this;
+    }
+
+    // Custom Long
+    public ServiceMetricBuilder WithCustomLong1(long value)
+    {
+      // TODO: [TESTS] (ServiceMetricBuilder.WithCustomLong1) Add tests
+      _builder.WithCustomLong(1, value);
+      return this;
+    }
+
+    public ServiceMetricBuilder WithCustomLong2(long value)
+    {
+      // TODO: [TESTS] (ServiceMetricBuilder.WithCustomLong2) Add tests
+      _builder.WithCustomLong(2, value);
+      return this;
+    }
+
+    public ServiceMetricBuilder WithCustomLong3(long value)
+    {
+      // TODO: [TESTS] (ServiceMetricBuilder.WithCustomLong3) Add tests
+      _builder.WithCustomLong(3, value);
       return this;
     }
 

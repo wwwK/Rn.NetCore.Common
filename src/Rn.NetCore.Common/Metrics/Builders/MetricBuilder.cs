@@ -92,6 +92,12 @@ namespace Rn.NetCore.Common.Metrics.Builders
       WithField($"custom_int{number}", value);
     }
 
+    public void WithCustomLong(int number, long value)
+    {
+      // TODO: [TESTS] (MetricBuilder.WithCustomLong) Add tests
+      WithField($"custom_long{number}", value);
+    }
+
     public void WithException(Exception ex)
     {
       // TODO: [TESTS] (MetricBuilder.WithException) Add tests
