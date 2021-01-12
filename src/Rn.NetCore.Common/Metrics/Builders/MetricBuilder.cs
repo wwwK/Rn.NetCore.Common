@@ -106,6 +106,12 @@ namespace Rn.NetCore.Common.Metrics.Builders
       WithTag(CoreMetricTag.ExceptionName, ex.GetType().Name, true);
     }
 
+    public void MarkFailed()
+    {
+      // TODO: [TESTS] (MetricBuilder.MarkFailed) Add tests
+      WithTag(CoreMetricTag.Success, false);
+    }
+
 
     // Build()
     public LineProtocolPoint Build(DateTime? overrideDate = null)

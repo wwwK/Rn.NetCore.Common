@@ -130,6 +130,13 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
+    public RepoMetricBuilder MarkFailed()
+    {
+      // TODO: [TESTS] (RepoMetricBuilder.MarkFailed) Add tests
+      _builder.MarkFailed();
+      return this;
+    }
+
 
     // Timing methods
     public IMetricTimingToken WithTiming()

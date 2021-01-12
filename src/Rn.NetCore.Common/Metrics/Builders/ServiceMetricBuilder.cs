@@ -129,6 +129,13 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
+    public ServiceMetricBuilder MarkFailed()
+    {
+      // TODO: [TESTS] (ServiceMetricBuilder.MarkFailed) Add tests
+      _builder.MarkFailed();
+      return this;
+    }
+
     // Custom Int
     public ServiceMetricBuilder WithCustomInt1(int value)
     {
