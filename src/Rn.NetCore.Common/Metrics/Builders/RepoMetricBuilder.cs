@@ -2,7 +2,7 @@
 
 namespace Rn.NetCore.Common.Metrics.Builders
 {
-  public class RepoMetricBuilder : BaseMetricLineBuilder
+  public class RepoMetricBuilder : BaseMetricBuilder
   {
     // Constructors
     public RepoMetricBuilder(string measurement = null)

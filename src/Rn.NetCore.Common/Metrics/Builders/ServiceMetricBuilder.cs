@@ -2,7 +2,7 @@
 
 namespace Rn.NetCore.Common.Metrics.Builders
 {
-  public class ServiceMetricBuilder : BaseMetricLineBuilder
+  public class ServiceMetricBuilder : BaseMetricBuilder
   {
     // Constructors
     public ServiceMetricBuilder(string measurement = null)

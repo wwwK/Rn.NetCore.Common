@@ -3,6 +3,7 @@
   public enum MetricSource
   {
     RepoCall,
-    ServiceCall
+    ServiceCall,
+    CronJob
   }
 }

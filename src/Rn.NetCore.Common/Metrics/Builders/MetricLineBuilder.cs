@@ -5,7 +5,7 @@ using Rn.NetCore.Common.Metrics.Models;
 
 namespace Rn.NetCore.Common.Metrics.Builders
 {
-  public abstract class BaseMetricLineBuilder
+  public abstract class BaseMetricBuilder
   {
     public string Measurement { get; }
     public Dictionary<string, string> Tags { get; }
@@ -13,10 +13,11 @@ namespace Rn.NetCore.Common.Metrics.Builders
     public DateTime? UtcTimestamp { get; set; }
 
     private readonly List<int> _customInt = new List<int> { 0, 0, 0, 0, 0, 0 };
+    private readonly List<long> _customLong = new List<long> { 0, 0, 0, 0, 0 };
     private int _resultsCount, _queryCount;
 
     // Constructors
-    protected BaseMetricLineBuilder(string measurement, MetricSource source)
+    protected BaseMetricBuilder(string measurement, MetricSource source)
     {
       // TODO: [TESTS] (MetricLineBuilder.MetricLineBuilder) Add tests
       if (string.IsNullOrWhiteSpace(measurement))
@@ -58,68 +59,73 @@ namespace Rn.NetCore.Common.Metrics.Builders
         {"custom_double1", (double) 0},
         {"custom_double2", (double) 0},
         {"custom_double3", (double) 0},
+        {"custom_long1", (long) 0},
+        {"custom_long2", (long) 0},
+        {"custom_long3", (long) 0},
+        {"custom_long4", (long) 0},
+        {"custom_long5", (long) 0},
       };
     }
 
 
     // Generic builder methods
-    public BaseMetricLineBuilder WithTag(string name, string value, bool skipToLower = false)
+    public BaseMetricBuilder WithTag(string name, string value, bool skipToLower = false)
     {
       // TODO: [TESTS] (MetricLineBuilder.WithTag) Add tests
       Tags[MetricUtils.CleanTagName(name)] = MetricUtils.CleanTagValue(value, skipToLower);
       return this;
     }
 
-    public BaseMetricLineBuilder WithTag(string name, int value)
+    public BaseMetricBuilder WithTag(string name, int value)
     {
       // TODO: [TESTS] (MetricLineBuilder.WithTag) Add tests
       Tags[MetricUtils.CleanTagName(name)] = value.ToString("D");
       return this;
     }
 
-    public BaseMetricLineBuilder WithTag(string name, long value)
+    public BaseMetricBuilder WithTag(string name, long value)
     {
       // TODO: [TESTS] (MetricLineBuilder.WithTag) Add tests
       Tags[MetricUtils.CleanTagName(name)] = value.ToString("D");
       return this;
     }
 
-    public BaseMetricLineBuilder WithTag(string name, bool value)
+    public BaseMetricBuilder WithTag(string name, bool value)
     {
       // TODO: [TESTS] (MetricLineBuilder.WithTag) Add tests
       Tags[MetricUtils.CleanTagName(name)] = value ? "true" : "false";
       return this;
     }
 
-    public BaseMetricLineBuilder WithField(string name, double value)
+    public BaseMetricBuilder WithField(string name, double value)
     {
       // TODO: [TESTS] (MetricLineBuilder.WithField) Add tests
       Fields[MetricUtils.CleanFieldName(name)] = value;
       return this;
     }
 
-    public BaseMetricLineBuilder WithField(string name, int value)
+    public BaseMetricBuilder WithField(string name, int value)
     {
       // TODO: [TESTS] (MetricLineBuilder.WithField) Add tests
       Fields[MetricUtils.CleanFieldName(name)] = value;
       return this;
     }
 
-    public BaseMetricLineBuilder WithField(string name, long value)
+    public BaseMetricBuilder WithField(string name, long value)
     {
       // TODO: [TESTS] (MetricLineBuilder.WithField) Add tests
       Fields[MetricUtils.CleanFieldName(name)] = value;
       return this;
     }
 
-    public BaseMetricLineBuilder WithField(string name, bool value)
+    public BaseMetricBuilder WithField(string name, bool value)
     {
       // TODO: [TESTS] (MetricLineBuilder.WithField) Add tests
       Fields[MetricUtils.CleanFieldName(name)] = value;
       return this;
     }
 
-    public BaseMetricLineBuilder WithException(Exception ex)
+    public BaseMetricBuilder WithException(Exception ex)
     {
       // TODO: [TESTS] (RepoMetricBuilder.WithException) Add tests
       WithTag("succeeded", false);
@@ -129,122 +135,122 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
-    public BaseMetricLineBuilder IncrementQueryCount(int amount = 1)
+    public BaseMetricBuilder IncrementQueryCount(int amount = 1)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.IncrementQueryCount) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.IncrementQueryCount) Add tests
       _queryCount += amount;
       return this;
     }
 
-    public BaseMetricLineBuilder WithQueryCount(int queryCount)
+    public BaseMetricBuilder WithQueryCount(int queryCount)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithQueryCount) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithQueryCount) Add tests
       _queryCount = queryCount;
       return this;
     }
 
 
     // Custom Tag1 methods
-    public BaseMetricLineBuilder WithCustomTag1(string value, bool skipToLower = false)
+    public BaseMetricBuilder WithCustomTag1(string value, bool skipToLower = false)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTag1) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTag1) Add tests
       WithTag("custom_tag1", value, skipToLower);
       return this;
     }
 
-    public BaseMetricLineBuilder WithCustomTag1(bool value)
+    public BaseMetricBuilder WithCustomTag1(bool value)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTag1) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTag1) Add tests
       return WithTag("custom_tag1", value);
     }
 
-    public BaseMetricLineBuilder WithCustomTag1(int value)
+    public BaseMetricBuilder WithCustomTag1(int value)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTag1) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTag1) Add tests
       return WithTag("custom_tag1", value);
     }
 
 
     // Custom Tag2 methods
-    public BaseMetricLineBuilder WithCustomTag2(string value, bool skipToLower = false)
+    public BaseMetricBuilder WithCustomTag2(string value, bool skipToLower = false)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTag2) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTag2) Add tests
       WithTag("custom_tag2", value, skipToLower);
       return this;
     }
 
-    public BaseMetricLineBuilder WithCustomTag2(bool value)
+    public BaseMetricBuilder WithCustomTag2(bool value)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTag2) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTag2) Add tests
       return WithTag("custom_tag2", value);
     }
 
-    public BaseMetricLineBuilder WithCustomTag2(int value)
+    public BaseMetricBuilder WithCustomTag2(int value)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTag2) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTag2) Add tests
       return WithTag("custom_tag2", value);
     }
 
 
     // Custom Tag3 methods
-    public BaseMetricLineBuilder WithCustomTag3(string value, bool skipToLower = false)
+    public BaseMetricBuilder WithCustomTag3(string value, bool skipToLower = false)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTag3) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTag3) Add tests
       WithTag("custom_tag3", value, skipToLower);
       return this;
     }
 
-    public BaseMetricLineBuilder WithCustomTag3(bool value)
+    public BaseMetricBuilder WithCustomTag3(bool value)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTag3) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTag3) Add tests
       return WithTag("custom_tag3", value);
     }
 
-    public BaseMetricLineBuilder WithCustomTag3(int value)
+    public BaseMetricBuilder WithCustomTag3(int value)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTag3) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTag3) Add tests
       return WithTag("custom_tag3", value);
     }
 
 
     // Custom Tag4 methods
-    public BaseMetricLineBuilder WithCustomTag4(string value, bool skipToLower = false)
+    public BaseMetricBuilder WithCustomTag4(string value, bool skipToLower = false)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTag4) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTag4) Add tests
       WithTag("custom_tag4", value, skipToLower);
       return this;
     }
 
-    public BaseMetricLineBuilder WithCustomTag4(bool value)
+    public BaseMetricBuilder WithCustomTag4(bool value)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTag4) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTag4) Add tests
       return WithTag("custom_tag4", value);
     }
 
-    public BaseMetricLineBuilder WithCustomTag4(int value)
+    public BaseMetricBuilder WithCustomTag4(int value)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTag4) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTag4) Add tests
       return WithTag("custom_tag4", value);
     }
 
 
     // Custom Tag5 methods
-    public BaseMetricLineBuilder WithCustomTag5(string value, bool skipToLower = false)
+    public BaseMetricBuilder WithCustomTag5(string value, bool skipToLower = false)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTag5) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTag5) Add tests
       WithTag("custom_tag5", value, skipToLower);
       return this;
     }
 
-    public BaseMetricLineBuilder WithCustomTag5(bool value)
+    public BaseMetricBuilder WithCustomTag5(bool value)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTag5) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTag5) Add tests
       return WithTag("custom_tag5", value);
     }
 
-    public BaseMetricLineBuilder WithCustomTag5(int value)
+    public BaseMetricBuilder WithCustomTag5(int value)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTag5) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTag5) Add tests
       return WithTag("custom_tag5", value);
     }
 
@@ -261,175 +267,212 @@ namespace Rn.NetCore.Common.Metrics.Builders
 
     public IMetricTimingToken WithCustomTiming1()
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTiming1) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTiming1) Add tests
       return new MetricTimingToken(this, "custom_timing1");
     }
 
     public IMetricTimingToken WithCustomTiming2()
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTiming2) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTiming2) Add tests
       return new MetricTimingToken(this, "custom_timing2");
     }
 
     public IMetricTimingToken WithCustomTiming3()
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTiming3) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTiming3) Add tests
       return new MetricTimingToken(this, "custom_timing3");
     }
 
     public IMetricTimingToken WithCustomTiming4()
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTiming4) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTiming4) Add tests
       return new MetricTimingToken(this, "custom_timing4");
     }
 
     public IMetricTimingToken WithCustomTiming5()
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTiming5) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTiming5) Add tests
       return new MetricTimingToken(this, "custom_timing5");
     }
 
     public IMetricTimingToken WithCustomTiming6()
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomTiming6) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomTiming6) Add tests
       return new MetricTimingToken(this, "custom_timing6");
     }
 
 
     // Custom Int methods
-    public BaseMetricLineBuilder WithCustomInt1(int value)
+    public BaseMetricBuilder WithCustomInt1(int value)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomInt1) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomInt1) Add tests
       _customInt[0] = value;
       return this;
     }
 
-    public BaseMetricLineBuilder IncrementCustomInt1(int amount = 1)
+    public BaseMetricBuilder IncrementCustomInt1(int amount = 1)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.IncrementCustomInt1) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.IncrementCustomInt1) Add tests
       _customInt[0] += amount;
       return this;
     }
 
-    public BaseMetricLineBuilder WithCustomInt2(int value)
+    public BaseMetricBuilder WithCustomInt2(int value)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomInt2) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomInt2) Add tests
       _customInt[1] = value;
       return this;
     }
 
-    public BaseMetricLineBuilder IncrementCustomInt2(int amount = 1)
+    public BaseMetricBuilder IncrementCustomInt2(int amount = 1)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.IncrementCustomInt2) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.IncrementCustomInt2) Add tests
       _customInt[1] += amount;
       return this;
     }
 
-    public BaseMetricLineBuilder WithCustomInt3(int value)
+    public BaseMetricBuilder WithCustomInt3(int value)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomInt3) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomInt3) Add tests
       _customInt[2] = value;
       return this;
     }
 
-    public BaseMetricLineBuilder IncrementCustomInt3(int amount = 1)
+    public BaseMetricBuilder IncrementCustomInt3(int amount = 1)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.IncrementCustomInt3) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.IncrementCustomInt3) Add tests
       _customInt[2] += amount;
       return this;
     }
 
-    public BaseMetricLineBuilder WithCustomInt4(int value)
+    public BaseMetricBuilder WithCustomInt4(int value)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomInt4) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomInt4) Add tests
       _customInt[3] = value;
       return this;
     }
 
-    public BaseMetricLineBuilder IncrementCustomInt4(int amount = 1)
+    public BaseMetricBuilder IncrementCustomInt4(int amount = 1)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.IncrementCustomInt4) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.IncrementCustomInt4) Add tests
       _customInt[3] += amount;
       return this;
     }
 
-    public BaseMetricLineBuilder WithCustomInt5(int value)
+    public BaseMetricBuilder WithCustomInt5(int value)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomInt5) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomInt5) Add tests
       _customInt[4] = value;
       return this;
     }
 
-    public BaseMetricLineBuilder IncrementCustomInt5(int amount = 1)
+    public BaseMetricBuilder IncrementCustomInt5(int amount = 1)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.IncrementCustomInt5) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.IncrementCustomInt5) Add tests
       _customInt[4] += amount;
       return this;
     }
 
-    public BaseMetricLineBuilder WithCustomInt6(int value)
+    public BaseMetricBuilder WithCustomInt6(int value)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomInt6) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomInt6) Add tests
       _customInt[5] = value;
       return this;
     }
 
-    public BaseMetricLineBuilder IncrementCustomInt6(int amount = 1)
+    public BaseMetricBuilder IncrementCustomInt6(int amount = 1)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.IncrementCustomInt6) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.IncrementCustomInt6) Add tests
       _customInt[5] += amount;
       return this;
     }
 
 
-    // Custom Double methods
-    public BaseMetricLineBuilder WithCustomDouble1(double value)
+    // Custom Long methods
+    public BaseMetricBuilder WithCustomLong1(long value)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomDouble1) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomLong1) Add tests
+      _customLong[0] = value;
+      return this;
+    }
+
+    public BaseMetricBuilder WithCustomLong2(long value)
+    {
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomLong2) Add tests
+      _customLong[1] = value;
+      return this;
+    }
+
+    public BaseMetricBuilder WithCustomLong3(long value)
+    {
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomLong3) Add tests
+      _customLong[2] = value;
+      return this;
+    }
+
+    public BaseMetricBuilder WithCustomLong4(long value)
+    {
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomLong4) Add tests
+      _customLong[3] = value;
+      return this;
+    }
+
+    public BaseMetricBuilder WithCustomLong5(long value)
+    {
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomLong5) Add tests
+      _customLong[4] = value;
+      return this;
+    }
+
+
+    // Custom Double methods
+    public BaseMetricBuilder WithCustomDouble1(double value)
+    {
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomDouble1) Add tests
       WithField("custom_double1", value);
       return this;
     }
 
-    public BaseMetricLineBuilder WithCustomDouble2(double value)
+    public BaseMetricBuilder WithCustomDouble2(double value)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomDouble2) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomDouble2) Add tests
       WithField("custom_double2", value);
       return this;
     }
 
-    public BaseMetricLineBuilder WithCustomDouble3(double value)
+    public BaseMetricBuilder WithCustomDouble3(double value)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithCustomDouble3) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithCustomDouble3) Add tests
       WithField("custom_double3", value);
       return this;
     }
 
 
     // Success related methods
-    public BaseMetricLineBuilder MarkSuccess(bool success)
+    public BaseMetricBuilder MarkSuccess(bool success)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.MarkSuccess) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.MarkSuccess) Add tests
       return WithTag("succeeded", success);
     }
 
-    public BaseMetricLineBuilder MarkSuccess(int resultCount = -1)
+    public BaseMetricBuilder MarkSuccess(int resultCount = -1)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.MarkSuccess) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.MarkSuccess) Add tests
       if (resultCount > -1)
         WithResultCount(resultCount);
 
       return WithTag("succeeded", true);
     }
 
-    public BaseMetricLineBuilder MarkSuccessIfNotNull(object obj)
+    public BaseMetricBuilder MarkSuccessIfNotNull(object obj)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.MarkSuccessIfNotNull) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.MarkSuccessIfNotNull) Add tests
       return WithTag("succeeded", obj != null);
     }
 
-    public BaseMetricLineBuilder MarkFailed(int resultCount = -1)
+    public BaseMetricBuilder MarkFailed(int resultCount = -1)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.MarkFailed) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.MarkFailed) Add tests
       if (resultCount > -1)
         WithResultCount(resultCount);
 
@@ -438,25 +481,25 @@ namespace Rn.NetCore.Common.Metrics.Builders
 
 
     // Result counting methods
-    public BaseMetricLineBuilder WithResultCount(int resultCount)
+    public BaseMetricBuilder WithResultCount(int resultCount)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.WithResultCount) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.WithResultCount) Add tests
       _resultsCount = resultCount;
       return this;
     }
 
-    public BaseMetricLineBuilder CountResult(object result = null)
+    public BaseMetricBuilder CountResult(object result = null)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.CountResult) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.CountResult) Add tests
       if (result != null)
         _resultsCount += 1;
 
       return this;
     }
 
-    public BaseMetricLineBuilder IncrementResultCount(int amount = 1)
+    public BaseMetricBuilder IncrementResultCount(int amount = 1)
     {
-      // TODO: [TESTS] (BaseMetricLineBuilder.IncrementResultCount) Add tests
+      // TODO: [TESTS] (BaseMetricBuilder.IncrementResultCount) Add tests
       _resultsCount += amount;
       return this;
     }
@@ -478,6 +521,11 @@ namespace Rn.NetCore.Common.Metrics.Builders
       Fields["custom_int4"] = _customInt[3];
       Fields["custom_int5"] = _customInt[4];
       Fields["custom_int6"] = _customInt[5];
+      Fields["custom_long1"] = _customLong[0];
+      Fields["custom_long2"] = _customLong[1];
+      Fields["custom_long3"] = _customLong[2];
+      Fields["custom_long4"] = _customLong[3];
+      Fields["custom_long5"] = _customLong[4];
       Fields["query_count"] = _queryCount;
       Fields["result_count"] = _resultsCount;
 

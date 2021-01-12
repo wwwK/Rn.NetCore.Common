@@ -18,8 +18,8 @@ namespace Rn.NetCore.Common.Metrics
   {
     bool Enabled { get; }
 
-    void SubmitPoint(BaseMetricLineBuilder builder);
-    Task SubmitPointAsync(BaseMetricLineBuilder builder);
+    void SubmitPoint(BaseMetricBuilder builder);
+    Task SubmitPointAsync(BaseMetricBuilder builder);
     void SubmitPoint(LineProtocolPoint point);
     Task SubmitPointAsync(LineProtocolPoint point);
   }
@@ -68,7 +68,7 @@ namespace Rn.NetCore.Common.Metrics
 
 
     // Interface methods
-    public void SubmitPoint(BaseMetricLineBuilder builder)
+    public void SubmitPoint(BaseMetricBuilder builder)
     {
       // TODO: [TESTS] (MetricService.SubmitPoint) Add tests
       if (!Enabled) { return; }
@@ -79,7 +79,7 @@ namespace Rn.NetCore.Common.Metrics
         .GetResult();
     }
 
-    public async Task SubmitPointAsync(BaseMetricLineBuilder builder)
+    public async Task SubmitPointAsync(BaseMetricBuilder builder)
     {
       // TODO: [TESTS] (MetricService.SubmitPointAsync) Add tests
       if (!Enabled) { return; }
@@ -125,6 +125,9 @@ namespace Rn.NetCore.Common.Metrics
 
       if (safeSource.IgnoreCaseEquals(MetricSource.ServiceCall.ToString("G")))
         return "service_call";
+
+      if (safeSource.IgnoreCaseEquals(MetricSource.CronJob.ToString("G")))
+        return "cron_job";
 
       // Unknown / Unhandled metric source
       _logger.Warning("Unable to resolve '{type}' to known measurement - using {final}",
@@ -220,6 +223,7 @@ namespace Rn.NetCore.Common.Metrics
       // Ensure that all "MetricSource" values have an associated template
       SetMeasurement(config, MetricSource.RepoCall, "repo_call");
       SetMeasurement(config, MetricSource.ServiceCall, "service_call");
+      SetMeasurement(config, MetricSource.CronJob, "cron_job");
     }
 
     private static void SetMeasurement(MetricsConfig config, MetricSource source, string builderType)
