@@ -35,7 +35,8 @@ namespace Rn.NetCore.Common.Metrics.Builders
       Fields = new Dictionary<string, object>
       {
         { CoreMetricField.Value, (long) 0 },
-        { CoreMetricField.CallCount, 1 }
+        { CoreMetricField.CallCount, 1 },
+        { CoreMetricField.UserId, 0 }
       };
     }
 
@@ -110,6 +111,12 @@ namespace Rn.NetCore.Common.Metrics.Builders
     {
       // TODO: [TESTS] (MetricBuilder.MarkFailed) Add tests
       WithTag(CoreMetricTag.Success, false);
+    }
+
+    public void WithUserId(int userId)
+    {
+      // TODO: [TESTS] (MetricBuilder.WithUserId) Add tests
+      WithField(CoreMetricField.UserId, userId);
     }
 
 

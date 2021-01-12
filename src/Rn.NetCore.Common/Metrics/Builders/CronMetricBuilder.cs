@@ -134,6 +134,13 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
+    public CronMetricBuilder WithUserId(int userId)
+    {
+      // TODO: [TESTS] (CronMetricBuilder.WithUserId) Add tests
+      _builder.WithUserId(userId);
+      return this;
+    }
+
     // Timings
     public IMetricTimingToken WithTiming()
     {

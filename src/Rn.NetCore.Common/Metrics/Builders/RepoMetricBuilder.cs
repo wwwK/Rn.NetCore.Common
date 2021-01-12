@@ -137,6 +137,13 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
+    public RepoMetricBuilder WithUserId(int userId)
+    {
+      // TODO: [TESTS] (RepoMetricBuilder.WithUserId) Add tests
+      _builder.WithUserId(userId);
+      return this;
+    }
+
 
     // Timing methods
     public IMetricTimingToken WithTiming()

@@ -4,6 +4,7 @@
   {
     public const string Value = "value";
     public const string CallCount = "call_count";
+    public const string UserId = "user_id";
     public const string CustomTiming1 = "custom_timing1";
     public const string CustomTiming2 = "custom_timing1";
     public const string CustomTiming3 = "custom_timing1";
