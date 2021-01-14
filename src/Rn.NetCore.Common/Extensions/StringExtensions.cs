@@ -27,6 +27,14 @@ namespace Rn.NetCore.Common.Extensions
       return input.ToLower().Trim();
     }
 
+    public static string UpperTrim(this string input)
+    {
+      // TODO: [TESTS] (StringExtensions.UpperTrim) Add tests
+      return string.IsNullOrWhiteSpace(input)
+        ? string.Empty
+        : input.ToUpper().Trim();
+    }
+
     public static bool AsBool(this string input, bool fallback = false)
     {
       // TODO: [TESTS] (StringExtensions.AsBool) Add tests

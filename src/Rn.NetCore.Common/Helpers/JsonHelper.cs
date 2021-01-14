@@ -9,7 +9,7 @@ namespace Rn.NetCore.Common.Helpers
     bool TryDeserializeObject<T>(string json, out T parsed);
     string SerializeObject(object value);
     string SerializeObject(object value, bool formatted);
-    object? DeserializeObject(string value, Type type);
+    object DeserializeObject(string value, Type type);
   }
 
   public class JsonHelper : IJsonHelper
@@ -42,7 +42,7 @@ namespace Rn.NetCore.Common.Helpers
         : JsonConvert.SerializeObject(value);
     }
 
-    public object? DeserializeObject(string value, Type type)
+    public object DeserializeObject(string value, Type type)
     {
       return JsonConvert.DeserializeObject(value, type);
     }
