@@ -5,8 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Rn.NetCore.Common.Abstractions;
+using Rn.NetCore.Common.Helpers;
 using Rn.NetCore.Common.Logging;
 using Rn.NetCore.Common.Metrics;
+using Rn.NetCore.Common.Metrics.Interfaces;
+using Rn.NetCore.Common.Metrics.Outputs;
 using Rn.NetCore.WebCommon.Filters;
 
 namespace DevWebApi
@@ -68,8 +71,15 @@ namespace DevWebApi
       services
         // Abstractions
         .AddSingleton<IDateTimeAbstraction, DateTimeAbstraction>()
+        .AddSingleton<IDirectoryAbstraction, DirectoryAbstraction>()
+        .AddSingleton<IFileAbstraction, FileAbstraction>()
+        .AddSingleton<IEnvironmentAbstraction, EnvironmentAbstraction>()
+        .AddSingleton<IPathAbstraction, PathAbstraction>()
+        // Helpers
+        .AddSingleton<IJsonHelper, JsonHelper>()
         // Metrics
         .AddSingleton<IMetricService, MetricService>()
+        .AddSingleton<IMetricOutput, CsvMetricOutput>()
         // Logging
         .AddSingleton(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>));
     }

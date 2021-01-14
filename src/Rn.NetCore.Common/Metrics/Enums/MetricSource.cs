@@ -4,6 +4,7 @@
   {
     RepoCall,
     ServiceCall,
-    CronJob
+    CronJob,
+    ApiCall
   }
 }

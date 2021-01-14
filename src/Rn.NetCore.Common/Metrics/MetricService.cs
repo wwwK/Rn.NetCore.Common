@@ -129,6 +129,9 @@ namespace Rn.NetCore.Common.Metrics
       if (safeSource.IgnoreCaseEquals(MetricSource.CronJob.ToString("G")))
         return "cron_job";
 
+      if (safeSource.IgnoreCaseEquals(MetricSource.ApiCall.ToString("G")))
+        return "api_call";
+
       // Unknown / Unhandled metric source
       _logger.Warning("Unable to resolve '{type}' to known measurement - using {final}",
         point.Tags[CoreMetricTag.Source],
@@ -224,6 +227,7 @@ namespace Rn.NetCore.Common.Metrics
       SetMeasurement(config, MetricSource.RepoCall, "repo_call");
       SetMeasurement(config, MetricSource.ServiceCall, "service_call");
       SetMeasurement(config, MetricSource.CronJob, "cron_job");
+      SetMeasurement(config, MetricSource.ApiCall, "api_call");
     }
 
     private static void SetMeasurement(MetricsConfig config, MetricSource source, string builderType)

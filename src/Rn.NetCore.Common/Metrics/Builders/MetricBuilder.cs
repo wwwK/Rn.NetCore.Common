@@ -56,6 +56,34 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
+    public MetricBuilder WithTag(string tag, int value)
+    {
+      // TODO: [TESTS] (MetricBuilder.WithTag) Add tests
+      Tags[MetricUtils.CleanTagName(tag)] = value.ToString(CultureInfo.InvariantCulture);
+      return this;
+    }
+
+    public MetricBuilder WithTag(string tag, long value)
+    {
+      // TODO: [TESTS] (MetricBuilder.WithTag) Add tests
+      Tags[MetricUtils.CleanTagName(tag)] = value.ToString(CultureInfo.InvariantCulture);
+      return this;
+    }
+
+    public MetricBuilder WithTag(string tag, double value)
+    {
+      // TODO: [TESTS] (MetricBuilder.WithTag) Add tests
+      Tags[MetricUtils.CleanTagName(tag)] = value.ToString(CultureInfo.InvariantCulture);
+      return this;
+    }
+
+    public MetricBuilder WithTag(string tag, float value)
+    {
+      // TODO: [TESTS] (MetricBuilder.WithTag) Add tests
+      Tags[MetricUtils.CleanTagName(tag)] = value.ToString(CultureInfo.InvariantCulture);
+      return this;
+    }
+
     public MetricBuilder WithField(string field, int value)
     {
       // TODO: [TESTS] (MetricBuilder.WithField) Add tests
@@ -64,6 +92,13 @@ namespace Rn.NetCore.Common.Metrics.Builders
     }
 
     public MetricBuilder WithField(string field, long value)
+    {
+      // TODO: [TESTS] (MetricBuilder.WithField) Add tests
+      Fields[MetricUtils.CleanFieldName(field)] = value;
+      return this;
+    }
+
+    public MetricBuilder WithField(string field, double value)
     {
       // TODO: [TESTS] (MetricBuilder.WithField) Add tests
       Fields[MetricUtils.CleanFieldName(field)] = value;
