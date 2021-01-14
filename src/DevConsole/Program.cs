@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,6 +12,7 @@ using Rn.NetCore.Common.Logging;
 using Rn.NetCore.Common.Metrics;
 using Rn.NetCore.Common.Metrics.Builders;
 using Rn.NetCore.Common.Metrics.Interfaces;
+using Rn.NetCore.Common.Metrics.Outputs;
 using Rn.NetCore.Metrics.Rabbit;
 
 namespace DevConsole
@@ -24,17 +26,23 @@ namespace DevConsole
     {
       ConfigureDI();
 
-      var builder = new RepoMetricBuilder("Repo", "Method", "Command")
-        .ForConnection("MyConnection")
-        .WithParameters(1)
+      var builder = new ServiceMetricBuilder("Service", "Method")
+        .WithCategory("Category", "SubCategory")
         .WithCustomTag1(true)
-        .WithCustomTag2(1)
-        .WithCustomTag3((long) 1)
-        .WithCustomTag4("hello")
-        .WithCustomTag5(DateTime.Now)
-        .Build();
+        .WithCustomInt1(10);
 
-      _logger.Info("Hello World!");
+      IMetricService metrics;
+      using (builder.WithTiming())
+      {
+        metrics = _serviceProvider.GetRequiredService<IMetricService>();
+      }
+
+      for (var i = 0; i < 200; i++)
+      {
+        metrics.SubmitPoint(builder.Build());
+      }
+
+      _logger.Info("All Done!");
     }
 
 
@@ -68,6 +76,7 @@ namespace DevConsole
         .AddSingleton<IEnvironmentAbstraction, EnvironmentAbstraction>()
         .AddSingleton<IDirectoryAbstraction, DirectoryAbstraction>()
         .AddSingleton<IFileAbstraction, FileAbstraction>()
+        .AddSingleton<IPathAbstraction, PathAbstraction>()
         .AddLogging(loggingBuilder =>
         {
           // configure Logging with NLog
@@ -88,7 +97,8 @@ namespace DevConsole
         .AddSingleton<IMetricService, MetricService>()
         .AddSingleton<IMetricOutput, RabbitMetricOutput>()
         .AddSingleton<IRabbitConnection, RabbitConnection>()
-        .AddSingleton<IRabbitFactory, RabbitFactory>();
+        .AddSingleton<IRabbitFactory, RabbitFactory>()
+        .AddSingleton<IMetricOutput, CsvMetricOutput>();
     }
   }
 }
