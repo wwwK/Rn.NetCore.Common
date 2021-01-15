@@ -1,38 +1,34 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Rn.NetCore.Common.Abstractions;
-using Rn.NetCore.Common.Metrics;
-using Rn.NetCore.WebCommon.Builders;
+using Rn.NetCore.WebCommon.Extensions;
 using Rn.NetCore.WebCommon.Models;
 
 namespace Rn.NetCore.WebCommon.Filters
 {
   public class MetricResourceFilter : IResourceFilter
   {
-    private readonly IDateTimeAbstraction _date;
-    private readonly IMetricService _metrics;
+    private readonly IDateTimeAbstraction _dateTime;
 
-    public MetricResourceFilter(
-      IDateTimeAbstraction dateTime,
-      IMetricService metrics)
+    public MetricResourceFilter(IDateTimeAbstraction dateTime)
     {
-      _date = dateTime;
-      _metrics = metrics;
+      _dateTime = dateTime;
     }
 
     // Interface methods
     public void OnResourceExecuting(ResourceExecutingContext context)
     {
       // TODO: [TESTS] (MetricResourceFilter.OnResourceExecuting) Add tests
-      context.HttpContext.Items[WebKeys.RequestContextKey] = new ApiMetricRequestContext(_date.UtcNow);
+      context.HttpContext.Items[WebKeys.RequestContextKey] = new ApiMetricRequestContext(_dateTime.UtcNow);
     }
 
     public void OnResourceExecuted(ResourceExecutedContext context)
     {
       // TODO: [TESTS] (MetricResourceFilter.OnResourceExecuted) Add tests
-      if (!context.HttpContext.Items.ContainsKey(WebKeys.RequestContextKey))
+      var requestMetricContext = context.HttpContext.GetApiRequestMetricContext();
+      if (requestMetricContext == null)
         return;
 
-      _metrics.SubmitPoint(new ApiCallMetricBuilder(context, _date.UtcNow).Build());
+      requestMetricContext.RequestEndTime = _dateTime.UtcNow;
     }
   }
 }

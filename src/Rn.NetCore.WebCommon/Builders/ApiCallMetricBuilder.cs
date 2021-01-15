@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Http;
 using Rn.NetCore.Common.Extensions;
 using Rn.NetCore.Common.Metrics.Builders;
 using Rn.NetCore.Common.Metrics.Enums;
+using Rn.NetCore.WebCommon.Extensions;
 using Rn.NetCore.WebCommon.Models;
 
 namespace Rn.NetCore.WebCommon.Builders
@@ -30,7 +29,7 @@ namespace Rn.NetCore.WebCommon.Builders
       public const string ResponseContentLength = "response_content_length";
     }
 
-    // Builder methods
+    // Constructors
     public ApiCallMetricBuilder(string measurement = null)
     {
       // TODO: [TESTS] (ApiCallMetricBuilder.ApiCallMetricBuilder) Add tests
@@ -47,31 +46,52 @@ namespace Rn.NetCore.WebCommon.Builders
         .WithField(Fields.ResultTimeMs, (double)0);
     }
 
-    public ApiCallMetricBuilder(ResourceExecutedContext context, DateTime utcNow)
+    public ApiCallMetricBuilder(HttpContext httpContext)
       : this()
     {
       // TODO: [TESTS] (ApiCallMetricBuilder) Add tests
-      if (!(context.HttpContext.Items[WebKeys.RequestContextKey] is ApiMetricRequestContext proxyRequest))
+      WithHttpContext(httpContext);
+
+      var requestMetricContext = httpContext.GetApiRequestMetricContext();
+      if (requestMetricContext == null)
         return;
 
-      var exName = WorkExceptionName(proxyRequest);
+      WithApiMetricRequestContext(requestMetricContext);
+    }
+
+
+    // Builder methods
+    public ApiCallMetricBuilder WithApiMetricRequestContext(ApiMetricRequestContext context)
+    {
+      // TODO: [TESTS] (ApiCallMetricBuilder.WithApiMetricRequestContext) Add tests
+      var exName = WorkExceptionName(context);
 
       _builder
-        // Tags
-        .WithTag(Tags.Controller, proxyRequest.Controller, true)
-        .WithTag(Tags.Action, proxyRequest.Action, true)
-        .WithTag(Tags.RequestMethod, WorkRequestMethod(context), true)
-        .WithTag(Tags.RequestContentType, WorkRequestContentType(context))
-        .WithTag(Tags.ResponseCode, WorkResponseStatusCode(context))
-        .WithTag(Tags.ResponseContentType, WorkResponseContentType(context))
         .WithTag(CoreMetricTag.ExceptionName, exName, true)
         .WithTag(CoreMetricTag.HasException, exName.Length > 0)
-        // Fields
-        .WithField(CoreMetricField.Value, WorkRequestRunTime(proxyRequest, utcNow))
-        .WithField(Fields.ActionTimeMs, WorkActionRunTime(proxyRequest))
-        .WithField(Fields.ResultTimeMs, WorkResultRunTime(proxyRequest))
-        .WithField(Fields.RequestContentLength, context?.HttpContext?.Request?.ContentLength ?? 0)
-        .WithField(Fields.ResponseContentLength, WorkResponseContentLength(context));
+        .WithTag(Tags.Controller, context.Controller, true)
+        .WithTag(Tags.Action, context.Action, true)
+        .WithField(CoreMetricField.Value, WorkRequestRunTime(context))
+        .WithField(Fields.ActionTimeMs, WorkActionRunTime(context))
+        .WithField(Fields.ResultTimeMs, WorkResultRunTime(context));
+
+      return this;
+    }
+
+    public ApiCallMetricBuilder WithHttpContext(HttpContext httpContext)
+    {
+      // TODO: [TESTS] (ApiCallMetricBuilder.WithHttpContext) Add tests
+      _builder
+        // Request related
+        .WithTag(Tags.RequestMethod, GetRequestMethod(httpContext), true)
+        .WithTag(Tags.RequestContentType, GetRequestContentType(httpContext))
+        .WithField(Fields.RequestContentLength, GetRequestContentLength(httpContext))
+        // Response Related
+        .WithTag(Tags.ResponseCode, GetResponseStatusCode(httpContext))
+        .WithTag(Tags.ResponseContentType, GetResponseContentType(httpContext))
+        .WithField(Fields.ResponseContentLength, GetResponseContentLength(httpContext));
+
+      return this;
     }
 
     public MetricBuilder Build()
@@ -81,12 +101,16 @@ namespace Rn.NetCore.WebCommon.Builders
 
 
     // Helper methods
-    public static double WorkRequestRunTime(ApiMetricRequestContext request, DateTime utcNow)
+    public static double WorkRequestRunTime(ApiMetricRequestContext request)
     {
       // TODO: [TESTS] (ApiCallMetricBuilder.WorkRequestRunTime) Add tests
-      return request?.RequestStartTime == null
-        ? 0
-        : (utcNow - request.RequestStartTime.Value).Milliseconds;
+      if (!request.RequestStartTime.HasValue || !request.RequestEndTime.HasValue)
+        return 0;
+
+      if (request.RequestStartTime.Value > request.RequestEndTime.Value)
+        return 0;
+
+      return (request.RequestEndTime.Value - request.RequestStartTime.Value).TotalMilliseconds;
     }
 
     public static double WorkActionRunTime(ApiMetricRequestContext request)
@@ -113,65 +137,51 @@ namespace Rn.NetCore.WebCommon.Builders
       return (end - start).TotalMilliseconds;
     }
 
-    private static string WorkResponseContentType(ResourceExecutedContext context)
+    private static string GetResponseContentType(HttpContext httpContext)
     {
-      // TODO: [TESTS] (ApiCallMetricBuilder.WorkResponseContentType) Add tests
-      return context.Exception != null
-        ? "text/html; charset=utf-8"
-        : context.HttpContext.Response.ContentType;
+      // TODO: [TESTS] (ApiCallMetricBuilder.GetResponseContentType) Add tests
+      return httpContext?.Response?.ContentType ?? MetricPlaceholder.Unset;
     }
 
-    private static int WorkResponseStatusCode(ResourceExecutedContext context)
+    private static int GetResponseStatusCode(HttpContext httpContext)
     {
-      // TODO: [TESTS] (ApiCallMetricBuilder.WorkResponseStatusCode) Add tests
-      return context.Exception != null ? 500 : context.HttpContext.Response.StatusCode;
+      // TODO: [TESTS] (ApiCallMetricBuilder.GetResponseStatusCode) Add tests
+      return httpContext?.Response?.StatusCode ?? 0;
     }
 
-    private static long WorkResponseContentLength(ResourceExecutedContext context)
+    private static long GetResponseContentLength(HttpContext httpContext)
     {
-      // TODO: [TESTS] (ApiCallMetricBuilder.WorkResponseContentLength) Add tests
-      if (context.HttpContext.Response.ContentLength.HasValue)
-        return context.HttpContext.Response.ContentLength.Value;
+      // TODO: [TESTS] (ApiCallMetricBuilder.GetResponseContentLength) Add tests
+      var contentLength = httpContext?.Response?.ContentLength ?? 0;
+      if (contentLength > 0)
+        return contentLength;
 
-      var contentType = (context.HttpContext?.Response?.ContentType ?? "").LowerTrim();
-      if (string.IsNullOrWhiteSpace(contentType))
-        return 0;
-
-      if (contentType.StartsWith("application/json"))
-      {
-        if (context.Result is ObjectResult bob)
-        {
-          return bob.Value?.ToString()?.Length ?? 0;
-        }
-
-        return 0;
-      }
-
-      if (!contentType.LowerTrim().StartsWith("text/"))
-        return 0;
-
-      if (context.Result is OkObjectResult actionResult)
-      {
-        return actionResult.Value?.ToString()?.Length ?? 0;
-      }
+      var bodyLength = httpContext?.Response?.Body?.Length ?? 0;
+      if (bodyLength > 0)
+        return bodyLength;
 
       return 0;
     }
 
-    private static string WorkRequestMethod(ActionContext context)
+    private static string GetRequestMethod(HttpContext httpContext)
     {
-      // TODO: [TESTS] (ApiCallMetricBuilder.WorkRequestMethod) Add tests
-      var requestMethod = context?.HttpContext?.Request?.Method ?? string.Empty;
+      // TODO: [TESTS] (ApiCallMetricBuilder.GetRequestMethod) Add tests
+      var requestMethod = httpContext?.Request?.Method ?? string.Empty;
 
       return string.IsNullOrWhiteSpace(requestMethod)
         ? MetricPlaceholder.Unknown
         : requestMethod.UpperTrim();
     }
 
-    private static string WorkRequestContentType(ActionContext context)
+    private static string GetRequestContentType(HttpContext httpContext)
     {
       // TODO: [TESTS] (ApiCallMetricBuilder.WorkRequestContentType) Add tests
-      return context?.HttpContext?.Request?.ContentType ?? MetricPlaceholder.None;
+      return httpContext?.Request?.ContentType ?? MetricPlaceholder.None;
+    }
+
+    private static long GetRequestContentLength(HttpContext httpContext)
+    {
+      return httpContext?.Request?.ContentLength ?? 0;
     }
 
     private static string WorkExceptionName(ApiMetricRequestContext request)

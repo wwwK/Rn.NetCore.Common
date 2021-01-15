@@ -12,6 +12,7 @@ using Rn.NetCore.Common.Metrics.Interfaces;
 using Rn.NetCore.Common.Metrics.Outputs;
 using Rn.NetCore.Metrics.Rabbit;
 using Rn.NetCore.WebCommon.Filters;
+using Rn.NetCore.WebCommon.Middleware;
 
 namespace DevWebApi
 {
@@ -55,6 +56,7 @@ namespace DevWebApi
       app.UseHttpsRedirection();
 
       app.UseRouting();
+      app.UseMiddleware<RequestResponseLoggingMiddleware>();
 
       app.UseAuthorization();
 

@@ -5,6 +5,7 @@ namespace Rn.NetCore.WebCommon.Models
   public class ApiMetricRequestContext
   {
     public DateTime? RequestStartTime { get; set; }
+    public DateTime? RequestEndTime { get; set; }
     public DateTime? ActionStartTime { get; set; }
     public DateTime? ActionEndTime { get; set; }
     public DateTime? ResultsStartTime { get; set; }
@@ -18,6 +19,7 @@ namespace Rn.NetCore.WebCommon.Models
     {
       // TODO: [TESTS] (ApiMetricRequestContext) Add tests
       RequestStartTime = null;
+      RequestEndTime = null;
       ActionStartTime = null;
       ActionEndTime = null;
       ResultsStartTime = null;
