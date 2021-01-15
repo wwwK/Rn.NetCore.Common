@@ -12,11 +12,11 @@ namespace Rn.NetCore.WebCommon.Builders
     {
       public const string Controller = "controller";
       public const string Action = "action";
-      public const string RequestMethod = "req_method";
-      public const string RequestContentType = "req_content_type";
-      public const string RequestProtocol = "req_protocol";
-      public const string RequestScheme = "req_scheme";
-      public const string RequestHost = "req_host";
+      public const string RequestMethod = "request_method";
+      public const string RequestContentType = "request_content_type";
+      public const string RequestProtocol = "request_protocol";
+      public const string RequestScheme = "request_scheme";
+      public const string RequestHost = "request_host";
       public const string ResponseCode = "response_code";
       public const string ResponseContentType = "response_content_type";
       public const string RanAction = "ran_action";
@@ -29,10 +29,10 @@ namespace Rn.NetCore.WebCommon.Builders
       public const string ResultTime = "result_ms";
       public const string MiddlewareTime = "middleware_ms";
       public const string ExceptionTime = "exception_ms";
-      public const string RequestContentLength = "req_content_length";
-      public const string RequestCookieCount = "req_cookies";
-      public const string RequestHeaderCount = "req_headers";
-      public const string RequestPort = "req_port";
+      public const string RequestContentLength = "request_content_length";
+      public const string RequestCookieCount = "request_cookies";
+      public const string RequestHeaderCount = "request_headers";
+      public const string RequestPort = "request_port";
       public const string ResponseContentLength = "response_content_length";
       public const string ResponseHeaderCount = "response_headers";
     }
