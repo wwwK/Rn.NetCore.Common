@@ -16,21 +16,15 @@ namespace Rn.NetCore.WebCommon.Filters
     public void OnResultExecuting(ResultExecutingContext context)
     {
       // TODO: [TESTS] (MetricResultFilter.OnResultExecuting) Add tests
-      var requestMetricContext = context.HttpContext.GetApiRequestMetricContext();
-      if(requestMetricContext == null)
-        return;
-
-      requestMetricContext.ResultsStartTime = _dateTime.UtcNow;
+      context.HttpContext.GetApiRequestMetricContext()
+        ?.WithResultExecutingContext(context, _dateTime.UtcNow);
     }
 
     public void OnResultExecuted(ResultExecutedContext context)
     {
       // TODO: [TESTS] (MetricResultFilter.OnResultExecuted) Add tests
-      var requestMetricContext = context.HttpContext.GetApiRequestMetricContext();
-      if(requestMetricContext == null)
-        return;
-
-      requestMetricContext.ResultsEndTime = _dateTime.UtcNow;
+      context.HttpContext.GetApiRequestMetricContext()
+        ?.WithResultExecutedContext(context, _dateTime.UtcNow);
     }
   }
 }

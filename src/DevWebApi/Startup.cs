@@ -32,10 +32,10 @@ namespace DevWebApi
 
       services.AddControllers(options =>
       {
-        options.Filters.Add<MetricActionFilter>();
-        options.Filters.Add<MetricExceptionFilter>();
+        // options.Filters.Add<MetricActionFilter>();
+        // options.Filters.Add<MetricExceptionFilter>();
         options.Filters.Add<MetricResultFilter>();
-        options.Filters.Add<MetricResourceFilter>();
+        //options.Filters.Add<MetricResourceFilter>();
       });
 
       services.AddSwaggerGen(c =>
@@ -56,7 +56,7 @@ namespace DevWebApi
       app.UseHttpsRedirection();
 
       app.UseRouting();
-      app.UseMiddleware<ApiRequestLoggingMiddleware>();
+      app.UseMiddleware<ApiMetricsMiddleware>();
 
       app.UseAuthorization();
 

@@ -24,8 +24,8 @@ namespace Rn.NetCore.WebCommon.Filters
       if (requestMetricContext == null)
         return;
 
-      requestMetricContext.Controller = GetControllerName(context);
-      requestMetricContext.Action = GetActionName(context);
+      //requestMetricContext.Controller = GetControllerName(context);
+      //requestMetricContext.Action = GetActionName(context);
       requestMetricContext.ActionStartTime = _dateTime.UtcNow;
       requestMetricContext.RequestGuid = Guid.NewGuid().ToString("D").UpperTrim();
     }

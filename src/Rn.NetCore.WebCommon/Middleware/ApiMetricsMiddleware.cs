@@ -12,15 +12,15 @@ using Rn.NetCore.WebCommon.Models;
 namespace Rn.NetCore.WebCommon.Middleware
 {
   // https://exceptionnotfound.net/using-middleware-to-log-requests-and-responses-in-asp-net-core/
-  public class ApiRequestLoggingMiddleware
+  public class ApiMetricsMiddleware
   {
-    private readonly ILoggerAdapter<ApiRequestLoggingMiddleware> _logger;
+    private readonly ILoggerAdapter<ApiMetricsMiddleware> _logger;
     private readonly IMetricService _metrics;
     private readonly IDateTimeAbstraction _dateTime;
     private readonly RequestDelegate _next;
 
-    public ApiRequestLoggingMiddleware(
-      ILoggerAdapter<ApiRequestLoggingMiddleware> logger,
+    public ApiMetricsMiddleware(
+      ILoggerAdapter<ApiMetricsMiddleware> logger,
       IMetricService metrics,
       IDateTimeAbstraction dateTime,
       RequestDelegate next)
@@ -34,31 +34,27 @@ namespace Rn.NetCore.WebCommon.Middleware
     public async Task Invoke(HttpContext context)
     {
       // Ensure that there is a metric context to work with
-      if (!context.HasApiRequestMetricContext())
-        context.Items[WebKeys.RequestContextKey] = new ApiMetricRequestContext(_dateTime.UtcNow);
+      var metricContext = context.SetAndGetApiRequestMetricContext(_dateTime.UtcNow);
 
       // Copy a pointer to the original response body stream
       var originalBodyStream = context.Response.Body;
+      await using var responseBody = new MemoryStream();
+      //...and use that for the temporary response body
+      context.Response.Body = responseBody;
 
-      using (var responseBody = new MemoryStream())
-      {
-        //...and use that for the temporary response body
-        context.Response.Body = responseBody;
+      //Continue down the Middleware pipeline, eventually returning to this class
+      await _next(context);
 
-        //Continue down the Middleware pipeline, eventually returning to this class
-        await _next(context);
+      await LogApiResponseMetric(context);
+      context.Response.Body.Seek(0, SeekOrigin.Begin);
 
-        await LogApiResponseMetric(context);
-        context.Response.Body.Seek(0, SeekOrigin.Begin);
-
-        //Copy the contents of the new memory stream (which contains the response) to the original stream, which is then returned to the client.
-        await responseBody.CopyToAsync(originalBodyStream);
-      }
+      //Copy the contents of the new memory stream (which contains the response) to the original stream, which is then returned to the client.
+      await responseBody.CopyToAsync(originalBodyStream);
     }
 
     private async Task LogApiResponseMetric(HttpContext httpContext)
     {
-      // TODO: [TESTS] (ApiRequestLoggingMiddleware.LogApiResponseMetric) Add tests
+      // TODO: [TESTS] (ApiMetricsMiddleware.LogApiResponseMetric) Add tests
       try
       {
         // Ensure we have something to work with
@@ -67,7 +63,7 @@ namespace Rn.NetCore.WebCommon.Middleware
           return;
 
         // Ensure that we have a valid end time
-        metricContext.RequestEndTime ??= _dateTime.UtcNow;
+        metricContext.SetRequestEndTime(_dateTime.UtcNow);
 
         var metricBuilder = new ApiCallMetricBuilder()
           .WithHttpContext(httpContext)
