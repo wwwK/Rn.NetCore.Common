@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Rn.NetCore.Common.Abstractions;
-using Rn.NetCore.WebCommon.Models;
+using Rn.NetCore.WebCommon.Extensions;
 
 namespace Rn.NetCore.WebCommon.Filters
 {
@@ -16,25 +16,21 @@ namespace Rn.NetCore.WebCommon.Filters
     public void OnResultExecuting(ResultExecutingContext context)
     {
       // TODO: [TESTS] (MetricResultFilter.OnResultExecuting) Add tests
-      if (!context.HttpContext.Items.ContainsKey(WebKeys.RequestContextKey))
+      var requestMetricContext = context.HttpContext.GetApiRequestMetricContext();
+      if(requestMetricContext == null)
         return;
 
-      if (!(context.HttpContext.Items[WebKeys.RequestContextKey] is ApiMetricRequestContext proxyRequest))
-        return;
-
-      proxyRequest.ResultsStartTime = _dateTime.UtcNow;
+      requestMetricContext.ResultsStartTime = _dateTime.UtcNow;
     }
 
     public void OnResultExecuted(ResultExecutedContext context)
     {
       // TODO: [TESTS] (MetricResultFilter.OnResultExecuted) Add tests
-      if (!context.HttpContext.Items.ContainsKey(WebKeys.RequestContextKey))
+      var requestMetricContext = context.HttpContext.GetApiRequestMetricContext();
+      if(requestMetricContext == null)
         return;
 
-      if (!(context.HttpContext.Items[WebKeys.RequestContextKey] is ApiMetricRequestContext proxyRequest))
-        return;
-
-      proxyRequest.ResultsEndTime = _dateTime.UtcNow;
+      requestMetricContext.ResultsEndTime = _dateTime.UtcNow;
     }
   }
 }

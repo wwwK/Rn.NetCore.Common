@@ -10,6 +10,7 @@ using Rn.NetCore.Common.Logging;
 using Rn.NetCore.Common.Metrics;
 using Rn.NetCore.Common.Metrics.Interfaces;
 using Rn.NetCore.Common.Metrics.Outputs;
+using Rn.NetCore.Metrics.Rabbit;
 using Rn.NetCore.WebCommon.Filters;
 
 namespace DevWebApi
@@ -27,7 +28,6 @@ namespace DevWebApi
     public void ConfigureServices(IServiceCollection services)
     {
       ConfigureServices_RnNetCore_Common(services);
-      ConfigureServices_RnNetCore_WebCommon(services);
 
       services.AddControllers(options =>
       {
@@ -80,13 +80,11 @@ namespace DevWebApi
         // Metrics
         .AddSingleton<IMetricService, MetricService>()
         .AddSingleton<IMetricOutput, CsvMetricOutput>()
+        .AddSingleton<IMetricOutput, RabbitMetricOutput>()
+        .AddSingleton<IRabbitConnection, RabbitConnection>()
+        .AddSingleton<IRabbitFactory, RabbitFactory>()
         // Logging
         .AddSingleton(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>));
-    }
-
-    private static void ConfigureServices_RnNetCore_WebCommon(IServiceCollection services)
-    {
-
     }
   }
 }

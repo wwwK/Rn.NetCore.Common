@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Rn.NetCore.Common.Abstractions;
 using Rn.NetCore.Common.Extensions;
-using Rn.NetCore.WebCommon.Models;
+using Rn.NetCore.WebCommon.Extensions;
 
 namespace Rn.NetCore.WebCommon.Filters
 {
@@ -20,28 +20,24 @@ namespace Rn.NetCore.WebCommon.Filters
     public void OnActionExecuting(ActionExecutingContext context)
     {
       // TODO: [TESTS] (MetricActionFilter.OnActionExecuting) Add tests
-      if (!context.HttpContext.Items.ContainsKey(WebKeys.RequestContextKey))
+      var requestMetricContext = context.HttpContext.GetApiRequestMetricContext();
+      if (requestMetricContext == null)
         return;
 
-      if (!(context.HttpContext.Items[WebKeys.RequestContextKey] is ApiMetricRequestContext proxyRequest))
-        return;
-
-      proxyRequest.Controller = GetControllerName(context);
-      proxyRequest.Action = GetActionName(context);
-      proxyRequest.ActionStartTime = _dateTime.UtcNow;
-      proxyRequest.RequestGuid = Guid.NewGuid().ToString("D").UpperTrim();
+      requestMetricContext.Controller = GetControllerName(context);
+      requestMetricContext.Action = GetActionName(context);
+      requestMetricContext.ActionStartTime = _dateTime.UtcNow;
+      requestMetricContext.RequestGuid = Guid.NewGuid().ToString("D").UpperTrim();
     }
 
     public void OnActionExecuted(ActionExecutedContext context)
     {
       // TODO: [TESTS] (MetricActionFilter.OnActionExecuted) Add tests
-      if (!context.HttpContext.Items.ContainsKey(WebKeys.RequestContextKey))
+      var requestMetricContext = context.HttpContext.GetApiRequestMetricContext();
+      if (requestMetricContext == null)
         return;
 
-      if (!(context.HttpContext.Items[WebKeys.RequestContextKey] is ApiMetricRequestContext proxyRequest))
-        return;
-
-      proxyRequest.ActionEndTime = _dateTime.UtcNow;
+      requestMetricContext.ActionEndTime = _dateTime.UtcNow;
     }
 
 

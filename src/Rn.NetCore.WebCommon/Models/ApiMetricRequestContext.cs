@@ -4,7 +4,6 @@ namespace Rn.NetCore.WebCommon.Models
 {
   public class ApiMetricRequestContext
   {
-    // TODO: [RENAME] (ApiMetricRequestContext) RENAME
     public DateTime? RequestStartTime { get; set; }
     public DateTime? ActionStartTime { get; set; }
     public DateTime? ActionEndTime { get; set; }
@@ -17,6 +16,7 @@ namespace Rn.NetCore.WebCommon.Models
 
     public ApiMetricRequestContext()
     {
+      // TODO: [TESTS] (ApiMetricRequestContext) Add tests
       RequestStartTime = null;
       ActionStartTime = null;
       ActionEndTime = null;
@@ -26,6 +26,13 @@ namespace Rn.NetCore.WebCommon.Models
       Action = string.Empty;
       RequestGuid = string.Empty;
       ExceptionName = string.Empty;
+    }
+
+    public ApiMetricRequestContext(DateTime requestStartTime)
+      : base()
+    {
+      // TODO: [TESTS] (ApiMetricRequestContext) Add tests
+      RequestStartTime = requestStartTime;
     }
   }
 }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using Rn.NetCore.WebCommon.Models;
+using Rn.NetCore.WebCommon.Extensions;
 
 namespace Rn.NetCore.WebCommon.Filters
 {
@@ -8,13 +8,11 @@ namespace Rn.NetCore.WebCommon.Filters
     public void OnException(ExceptionContext context)
     {
       // TODO: [TESTS] (MetricExceptionFilter.OnException) Add tests
-      if (!context.HttpContext.Items.ContainsKey(WebKeys.RequestContextKey))
+      var requestMetricContext = context.HttpContext.GetApiRequestMetricContext();
+      if(requestMetricContext == null)
         return;
 
-      if (!(context.HttpContext.Items[WebKeys.RequestContextKey] is ApiMetricRequestContext proxyRequest))
-        return;
-
-      proxyRequest.ExceptionName = context.Exception.GetType().Name;
+      requestMetricContext.ExceptionName = context.Exception.GetType().Name;
     }
   }
 }
