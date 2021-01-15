@@ -2,31 +2,41 @@
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Rn.NetCore.Common.Abstractions;
 using Rn.NetCore.Common.Logging;
 using Rn.NetCore.Common.Metrics;
 using Rn.NetCore.WebCommon.Builders;
+using Rn.NetCore.WebCommon.Extensions;
+using Rn.NetCore.WebCommon.Models;
 
 namespace Rn.NetCore.WebCommon.Middleware
 {
   // https://exceptionnotfound.net/using-middleware-to-log-requests-and-responses-in-asp-net-core/
-  public class RequestResponseLoggingMiddleware
+  public class ApiRequestLoggingMiddleware
   {
-    private readonly ILoggerAdapter<RequestResponseLoggingMiddleware> _logger;
+    private readonly ILoggerAdapter<ApiRequestLoggingMiddleware> _logger;
     private readonly IMetricService _metrics;
+    private readonly IDateTimeAbstraction _dateTime;
     private readonly RequestDelegate _next;
 
-    public RequestResponseLoggingMiddleware(
-      ILoggerAdapter<RequestResponseLoggingMiddleware> logger,
+    public ApiRequestLoggingMiddleware(
+      ILoggerAdapter<ApiRequestLoggingMiddleware> logger,
       IMetricService metrics,
+      IDateTimeAbstraction dateTime,
       RequestDelegate next)
     {
       _logger = logger;
       _metrics = metrics;
       _next = next;
+      _dateTime = dateTime;
     }
 
     public async Task Invoke(HttpContext context)
     {
+      // Ensure that there is a metric context to work with
+      if (!context.HasApiRequestMetricContext())
+        context.Items[WebKeys.RequestContextKey] = new ApiMetricRequestContext(_dateTime.UtcNow);
+
       // Copy a pointer to the original response body stream
       var originalBodyStream = context.Response.Body;
 
@@ -48,10 +58,22 @@ namespace Rn.NetCore.WebCommon.Middleware
 
     private async Task LogApiResponseMetric(HttpContext httpContext)
     {
-      // TODO: [TESTS] (RequestResponseLoggingMiddleware.LogApiResponseMetric) Add tests
+      // TODO: [TESTS] (ApiRequestLoggingMiddleware.LogApiResponseMetric) Add tests
       try
       {
-        await _metrics.SubmitPointAsync(new ApiCallMetricBuilder(httpContext).Build());
+        // Ensure we have something to work with
+        var metricContext = httpContext.GetApiRequestMetricContext();
+        if (metricContext == null)
+          return;
+
+        // Ensure that we have a valid end time
+        metricContext.RequestEndTime ??= _dateTime.UtcNow;
+
+        var metricBuilder = new ApiCallMetricBuilder()
+          .WithHttpContext(httpContext)
+          .WithApiMetricRequestContext(metricContext);
+
+        await _metrics.SubmitPointAsync(metricBuilder.Build());
       }
       catch (Exception ex)
       {

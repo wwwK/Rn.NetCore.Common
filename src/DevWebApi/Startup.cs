@@ -56,7 +56,7 @@ namespace DevWebApi
       app.UseHttpsRedirection();
 
       app.UseRouting();
-      app.UseMiddleware<RequestResponseLoggingMiddleware>();
+      app.UseMiddleware<ApiRequestLoggingMiddleware>();
 
       app.UseAuthorization();
 
