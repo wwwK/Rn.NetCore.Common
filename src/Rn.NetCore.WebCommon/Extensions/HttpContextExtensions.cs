@@ -13,18 +13,9 @@ namespace Rn.NetCore.WebCommon.Extensions
       return context?.Items?.ContainsKey(WebKeys.RequestContextKey) ?? false;
     }
 
-    public static void SetApiRequestMetricContext(this HttpContext context, DateTime utcNow)
+    public static ApiMetricRequestContext GetApiRequestMetricContext(this HttpContext context, DateTime utcNow)
     {
-      // TODO: [TESTS] (HttpContextExtensions.SetAndGetApiRequestMetricContext) Add tests
-      if (context.HasApiRequestMetricContext())
-        return;
-
-      context.Items[WebKeys.RequestContextKey] = new ApiMetricRequestContext(utcNow);
-    }
-
-    public static ApiMetricRequestContext SetAndGetApiRequestMetricContext(this HttpContext context, DateTime utcNow)
-    {
-      // TODO: [TESTS] (HttpContextExtensions.SetAndGetApiRequestMetricContext) Add tests
+      // TODO: [TESTS] (HttpContextExtensions.GetApiRequestMetricContext) Add tests
       if (!context.HasApiRequestMetricContext())
       {
         context.Items[WebKeys.RequestContextKey] = new ApiMetricRequestContext(utcNow);
@@ -36,13 +27,13 @@ namespace Rn.NetCore.WebCommon.Extensions
     public static ApiMetricRequestContext GetApiRequestMetricContext(this HttpContext context)
     {
       // TODO: [TESTS] (HttpContextExtensions.GetApiRequestMetricContext) Add tests
-      if (!(context?.Items?.ContainsKey(WebKeys.RequestContextKey) ?? false))
+      if (!context.HasApiRequestMetricContext())
         return null;
 
-      if (!(context.Items[WebKeys.RequestContextKey] is ApiMetricRequestContext proxyRequest))
+      if (!(context.Items[WebKeys.RequestContextKey] is ApiMetricRequestContext metricContext))
         return null;
 
-      return proxyRequest;
+      return metricContext;
     }
 
     public static string GetRouteKey(this RouteData routeData, string key, string fallback = null)

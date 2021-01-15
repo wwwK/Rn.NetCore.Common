@@ -32,10 +32,10 @@ namespace DevWebApi
 
       services.AddControllers(options =>
       {
-        // options.Filters.Add<MetricActionFilter>();
-        // options.Filters.Add<MetricExceptionFilter>();
-        options.Filters.Add<MetricResultFilter>();
-        //options.Filters.Add<MetricResourceFilter>();
+        options.Filters.Add<ApiMetricActionFilter>();
+        options.Filters.Add<ApiMetricExceptionFilter>();
+        options.Filters.Add<ApiMetricResultFilter>();
+        options.Filters.Add<ApiMetricResourceFilter>();
       });
 
       services.AddSwaggerGen(c =>

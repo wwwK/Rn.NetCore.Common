@@ -11,14 +11,17 @@ namespace Rn.NetCore.WebCommon.Models
   {
     public DateTime? RequestStartTime { get; private set; }
     public DateTime? RequestEndTime { get; private set; }
-    public DateTime? ActionStartTime { get; set; }
-    public DateTime? ActionEndTime { get; set; }
+    public DateTime? ActionStartTime { get; private set; }
+    public DateTime? ActionEndTime { get; private set; }
     public DateTime? ResultsStartTime { get; private set; }
     public DateTime? ResultsEndTime { get; private set; }
+    public DateTime? ExThrownTime { get; private set; }
+    public DateTime? MiddlewareStartTime { get; private set; }
+    public DateTime? MiddlewareEndTime { get; private set; }
     public string Controller { get; private set; }
     public string Action { get; private set; }
-    public string RequestGuid { get; set; }
-    public string ExceptionName { get; set; }
+    public string RequestGuid { get; private set; }
+    public string ExceptionName { get; private set; }
     public string RequestMethod { get; private set; }
     public string RequestContentType { get; private set; }
     public long RequestContentLength { get; private set; }
@@ -28,6 +31,10 @@ namespace Rn.NetCore.WebCommon.Models
     public int RequestHeaderCount { get; private set; }
     public string RequestHost { get; private set; }
     public int RequestPort { get; private set; }
+    public int ResponseCode { get; private set; }
+    public string ResponseContentType { get; private set; }
+    public long ResponseContentLength { get; private set; }
+    public int ResponseHeaderCount { get; private set; }
 
 
     // Constructors
@@ -40,6 +47,9 @@ namespace Rn.NetCore.WebCommon.Models
       ActionEndTime = null;
       ResultsStartTime = null;
       ResultsEndTime = null;
+      ExThrownTime = null;
+      MiddlewareStartTime = null;
+      MiddlewareEndTime = null;
       Controller = string.Empty;
       Action = string.Empty;
       RequestGuid = string.Empty;
@@ -53,6 +63,10 @@ namespace Rn.NetCore.WebCommon.Models
       RequestHeaderCount = 0;
       RequestHost = string.Empty;
       RequestPort = 0;
+      ResponseCode = 0;
+      ResponseContentType = string.Empty;
+      ResponseContentLength = 0;
+      ResponseHeaderCount = 0;
     }
 
     public ApiMetricRequestContext(DateTime requestStartTime)
@@ -217,44 +231,50 @@ namespace Rn.NetCore.WebCommon.Models
       return this;
     }
 
-
-    // Builder Methods (complex)
-    public ApiMetricRequestContext WithResourceExecutingContext(ResourceExecutingContext context,
-      bool forceOverwrite = false)
+    public ApiMetricRequestContext SetExThrownTime(DateTime utcNow, bool forceOverwrite = false)
     {
-      // TODO: [TESTS] (ApiMetricRequestContext.WithResourceExecutingContext) Add tests
-      if (context == null)
+      // TODO: [TESTS] (ApiMetricRequestContext.SetExThrownTime) Add tests
+      if (ExThrownTime.HasValue && !forceOverwrite)
         return this;
 
-      return WithRouteData(context.RouteData, forceOverwrite)
-        .WithHttpRequest(context.HttpContext.Request, forceOverwrite);
+      ExThrownTime = utcNow;
+      return this;
     }
 
-    public ApiMetricRequestContext WithResourceExecutedContext(ResourceExecutedContext context, DateTime utcNow,
-      bool forceOverwrite = false)
+    public ApiMetricRequestContext SetActionStartTime(DateTime utcNow, bool forceOverwrite = false)
     {
-      // TODO: [TESTS] (ApiMetricRequestContext.WithResourceExecutedContext) Add tests
-      if (context == null)
+      // TODO: [TESTS] (ApiMetricRequestContext.SetActionStartTime) Add tests
+      if (ActionStartTime.HasValue && !forceOverwrite)
         return this;
 
-      return SetRequestEndTime(utcNow, forceOverwrite)
-        .WithRouteData(context.RouteData, forceOverwrite);
+      ActionStartTime = utcNow;
+      return this;
     }
 
-    public ApiMetricRequestContext WithResultExecutingContext(ResultExecutingContext context, DateTime utcNow,
-      bool forceOverwrite = false)
+    public ApiMetricRequestContext SetRequestGuid(string requestGuid, bool forceOverwrite = false)
     {
-      // TODO: [TESTS] (ApiMetricRequestContext.WithResultExecutingContext) Add tests
-      return WithHttpRequest(context.HttpContext.Request, forceOverwrite)
-        .WithRouteData(context.RouteData, forceOverwrite)
-        .SetResultsStartTime(utcNow, forceOverwrite);
+      // TODO: [TESTS] (ApiMetricRequestContext.SetRequestGuid) Add tests
+      if (!string.IsNullOrWhiteSpace(RequestGuid) && !forceOverwrite)
+        return this;
+
+      RequestGuid = requestGuid;
+      return this;
     }
 
-    public ApiMetricRequestContext WithResultExecutedContext(ResultExecutedContext context, DateTime utcNow,
-      bool forceOverwrite = false)
+    public ApiMetricRequestContext SetRequestGuid(Guid requestGuid, bool forceOverwrite = false)
     {
-      // TODO: [TESTS] (ApiMetricRequestContext.WithResultExecutedContext) Add tests
-      return SetResultsEndTime(utcNow, forceOverwrite);
+      // TODO: [TESTS] (ApiMetricRequestContext.SetRequestGuid) Add tests
+      return SetRequestGuid(requestGuid.ToString("D").UpperTrim(), forceOverwrite);
+    }
+
+    public ApiMetricRequestContext SetActionEndTime(DateTime utcNow, bool forceOverwrite = false)
+    {
+      // TODO: [TESTS] (ApiMetricRequestContext.SetActionEndTime) Add tests
+      if (ActionEndTime.HasValue && !forceOverwrite)
+        return this;
+
+      ActionEndTime = utcNow;
+      return this;
     }
 
     public ApiMetricRequestContext WithRouteData(RouteData routeData, bool forceOverwrite = false)
@@ -282,6 +302,191 @@ namespace Rn.NetCore.WebCommon.Models
         .SetRequestHeaderCount(request, forceOverwrite)
         .SetRequestCookieCount(request, forceOverwrite)
         .SetRequestPort(request.Host, forceOverwrite);
+    }
+
+    public ApiMetricRequestContext WithException(Exception ex, bool forceOverwrite = false)
+    {
+      // TODO: [TESTS] (ApiMetricRequestContext.WithException) Add tests
+      if (ex == null)
+        return this;
+
+      if (!string.IsNullOrWhiteSpace(ExceptionName) && !forceOverwrite)
+        return this;
+
+      ExceptionName = ex.GetType().Name;
+      return this;
+    }
+
+    public ApiMetricRequestContext SetMiddlewareStartTime(DateTime utcNow, bool forceOverwrite = false)
+    {
+      // TODO: [TESTS] (ApiMetricRequestContext.SetMiddlewareStartTime) Add tests
+      if (MiddlewareStartTime.HasValue && !forceOverwrite)
+        return this;
+
+      MiddlewareStartTime = utcNow;
+      return this;
+    }
+
+    public ApiMetricRequestContext SetMiddlewareEndTime(DateTime utcNow, bool forceOverwrite = false)
+    {
+      // TODO: [TESTS] (ApiMetricRequestContext.SetMiddlewareEndTime) Add tests
+      if (MiddlewareEndTime.HasValue && !forceOverwrite)
+        return this;
+
+      MiddlewareEndTime = utcNow;
+      return this;
+    }
+
+    public ApiMetricRequestContext WithResponseCode(int responseCode, bool forceOverwrite = false)
+    {
+      // TODO: [TESTS] (ApiMetricRequestContext.WithResponseCode) Add tests
+      if (ResponseCode > 0 && !forceOverwrite)
+        return this;
+
+      if (responseCode > 0)
+        ResponseCode = responseCode;
+
+      return this;
+    }
+
+    public ApiMetricRequestContext WithResponseContentType(string contentType, bool forceOverwrite = false)
+    {
+      // TODO: [TESTS] (ApiMetricRequestContext.WithResponseContentType) Add tests
+      if (!string.IsNullOrWhiteSpace(ResponseContentType) && !forceOverwrite)
+        return this;
+
+      if (!string.IsNullOrWhiteSpace(contentType))
+        ResponseContentType = contentType;
+
+      return this;
+    }
+
+    public ApiMetricRequestContext WithResponseContentLength(HttpResponse response, bool forceOverwrite = false)
+    {
+      // TODO: [TESTS] (ApiMetricRequestContext.WithResponseContentLength) Add tests
+      if (response == null)
+        return this;
+
+      if (ResponseContentLength > 0 && !forceOverwrite)
+        return this;
+
+      var contentLength = response.ContentLength ?? 0;
+
+      if (contentLength == 0)
+        contentLength = response.Body?.Length ?? 0;
+
+      ResponseContentLength = contentLength;
+      return this;
+    }
+
+    public ApiMetricRequestContext WithResponseHeaderCount(HttpResponse response, bool forceOverwrite = false)
+    {
+      // TODO: [TESTS] (ApiMetricRequestContext.WithResponseHeaderCount) Add tests
+      if (response == null)
+        return this;
+
+      if (ResponseHeaderCount > 0 && !forceOverwrite)
+        return this;
+
+      ResponseHeaderCount = response.Headers?.Count ?? 0;
+      return this;
+    }
+
+    public ApiMetricRequestContext WithHttpResponse(HttpResponse response, bool forceOverwrite = false)
+    {
+      // TODO: [TESTS] (ApiMetricRequestContext.WithHttpResponse) Add tests
+      if (response == null)
+        return this;
+
+      return WithResponseCode(response.StatusCode, forceOverwrite)
+        .WithResponseContentType(response.ContentType, forceOverwrite)
+        .WithResponseContentLength(response, forceOverwrite)
+        .WithResponseHeaderCount(response, forceOverwrite);
+    }
+
+
+    // Builder Methods (Filter Hooks)
+    public void WithActionExecutingContext(ActionExecutingContext context, DateTime utcNow, bool forceOverwrite = false)
+    {
+      // TODO: [TESTS] (ApiMetricRequestContext.WithActionExecutingContext) Add tests
+      if (context == null)
+        return;
+
+      SetActionStartTime(utcNow, forceOverwrite)
+        .WithRouteData(context.RouteData, forceOverwrite)
+        .SetRequestGuid(Guid.NewGuid());
+    }
+
+    public void WithActionExecutedContext(ActionExecutedContext context, DateTime utcNow, bool forceOverwrite = false)
+    {
+      // TODO: [TESTS] (ApiMetricRequestContext.WithActionExecutedContext) Add tests
+      if (context == null)
+        return;
+
+      SetActionEndTime(utcNow, forceOverwrite);
+    }
+
+    public void WithResourceExecutingContext(ResourceExecutingContext context, bool forceOverwrite = false)
+    {
+      // TODO: [TESTS] (ApiMetricRequestContext.WithResourceExecutingContext) Add tests
+      if (context == null)
+        return;
+
+      WithRouteData(context.RouteData, forceOverwrite)
+        .WithHttpRequest(context.HttpContext.Request, forceOverwrite);
+    }
+
+    public void WithResourceExecutedContext(ResourceExecutedContext context, DateTime utcNow, bool forceOverwrite = false)
+    {
+      // TODO: [TESTS] (ApiMetricRequestContext.WithResourceExecutedContext) Add tests
+      if (context == null)
+        return;
+
+      SetRequestEndTime(utcNow, forceOverwrite)
+        .WithRouteData(context.RouteData, forceOverwrite);
+    }
+
+    public void WithResultExecutingContext(ResultExecutingContext context, DateTime utcNow, bool forceOverwrite = false)
+    {
+      // TODO: [TESTS] (ApiMetricRequestContext.WithResultExecutingContext) Add tests
+      if (context == null)
+        return;
+
+      WithHttpRequest(context.HttpContext.Request, forceOverwrite)
+        .WithRouteData(context.RouteData, forceOverwrite)
+        .SetResultsStartTime(utcNow, forceOverwrite);
+    }
+
+    public void WithResultExecutedContext(ResultExecutedContext context, DateTime utcNow, bool forceOverwrite = false)
+    {
+      // TODO: [TESTS] (ApiMetricRequestContext.WithResultExecutedContext) Add tests
+      SetResultsEndTime(utcNow, forceOverwrite);
+    }
+
+    public void WithExceptionContext(ExceptionContext context, DateTime utcNow, bool forceOverwrite = true)
+    {
+      // TODO: [TESTS] (ApiMetricRequestContext.WithExceptionContext) Add tests
+      if (context == null)
+        return;
+
+      WithRouteData(context.RouteData, forceOverwrite)
+        .WithHttpRequest(context.HttpContext.Request, forceOverwrite)
+        .WithHttpResponse(context.HttpContext.Response, forceOverwrite)
+        .WithException(context.Exception, forceOverwrite)
+        .SetExThrownTime(utcNow, forceOverwrite)
+        .WithResponseCode(500, forceOverwrite)
+        .SetRequestEndTime(utcNow)
+        .SetMiddlewareEndTime(utcNow);
+    }
+
+    public void CompleteMiddlewareRequest(HttpContext httpContext, DateTime utcNow)
+    {
+      // TODO: [TESTS] (ApiMetricRequestContext.CompleteMiddlewareRequest) Add tests
+      SetRequestEndTime(utcNow);
+      SetMiddlewareEndTime(utcNow);
+      WithRouteData(httpContext.GetRouteData());
+      WithHttpRequest(httpContext.Request);
+      WithHttpResponse(httpContext.Response);
     }
 
 

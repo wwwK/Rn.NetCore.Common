@@ -13,8 +13,8 @@ namespace DevWebApi.Controllers
   {
     private static readonly string[] Summaries = new[]
     {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+      "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+    };
 
     private readonly ILogger<WeatherForecastController> _logger;
 
@@ -34,6 +34,13 @@ namespace DevWebApi.Controllers
         Summary = Summaries[rng.Next(Summaries.Length)]
       })
       .ToArray();
+    }
+
+    [HttpGet, Route("ex")]
+    public ActionResult<string> ThrowEx()
+    {
+      throw new Exception("Whoops");
+      return Ok("All good");
     }
   }
 }

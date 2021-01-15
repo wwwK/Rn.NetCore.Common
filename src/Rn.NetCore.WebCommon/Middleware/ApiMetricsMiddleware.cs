@@ -7,7 +7,6 @@ using Rn.NetCore.Common.Logging;
 using Rn.NetCore.Common.Metrics;
 using Rn.NetCore.WebCommon.Builders;
 using Rn.NetCore.WebCommon.Extensions;
-using Rn.NetCore.WebCommon.Models;
 
 namespace Rn.NetCore.WebCommon.Middleware
 {
@@ -34,21 +33,25 @@ namespace Rn.NetCore.WebCommon.Middleware
     public async Task Invoke(HttpContext context)
     {
       // Ensure that there is a metric context to work with
-      var metricContext = context.SetAndGetApiRequestMetricContext(_dateTime.UtcNow);
+      var metricContext = context.GetApiRequestMetricContext(_dateTime.UtcNow);
+      metricContext?.SetMiddlewareStartTime(_dateTime.UtcNow);
 
       // Copy a pointer to the original response body stream
       var originalBodyStream = context.Response.Body;
       await using var responseBody = new MemoryStream();
-      //...and use that for the temporary response body
+      // ...and use that for the temporary response body
       context.Response.Body = responseBody;
 
-      //Continue down the Middleware pipeline, eventually returning to this class
+      // Continue down the Middleware pipeline
+      metricContext?.SetActionStartTime(_dateTime.UtcNow);
       await _next(context);
+      metricContext?.SetActionEndTime(_dateTime.UtcNow);
 
       await LogApiResponseMetric(context);
       context.Response.Body.Seek(0, SeekOrigin.Begin);
 
-      //Copy the contents of the new memory stream (which contains the response) to the original stream, which is then returned to the client.
+      // Copy the contents of the new memory stream (which contains the response)
+      // to the original stream, which is then returned to the client.
       await responseBody.CopyToAsync(originalBodyStream);
     }
 
@@ -59,17 +62,12 @@ namespace Rn.NetCore.WebCommon.Middleware
       {
         // Ensure we have something to work with
         var metricContext = httpContext.GetApiRequestMetricContext();
-        if (metricContext == null)
-          return;
+        if (metricContext == null) return;
+        metricContext.CompleteMiddlewareRequest(httpContext, _dateTime.UtcNow);
 
-        // Ensure that we have a valid end time
-        metricContext.SetRequestEndTime(_dateTime.UtcNow);
-
-        var metricBuilder = new ApiCallMetricBuilder()
-          .WithHttpContext(httpContext)
-          .WithApiMetricRequestContext(metricContext);
-
-        await _metrics.SubmitPointAsync(metricBuilder.Build());
+        await _metrics.SubmitPointAsync(
+          new ApiCallMetricBuilder(metricContext).Build()
+        );
       }
       catch (Exception ex)
       {

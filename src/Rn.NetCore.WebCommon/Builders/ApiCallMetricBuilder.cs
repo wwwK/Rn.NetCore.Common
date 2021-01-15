@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Rn.NetCore.Common.Extensions;
-using Rn.NetCore.Common.Metrics.Builders;
+﻿using Rn.NetCore.Common.Metrics.Builders;
 using Rn.NetCore.Common.Metrics.Enums;
-using Rn.NetCore.WebCommon.Extensions;
 using Rn.NetCore.WebCommon.Models;
 
 namespace Rn.NetCore.WebCommon.Builders
@@ -15,181 +12,288 @@ namespace Rn.NetCore.WebCommon.Builders
     {
       public const string Controller = "controller";
       public const string Action = "action";
-      public const string RequestMethod = "request_method";
-      public const string RequestContentType = "request_content_type";
+      public const string RequestMethod = "req_method";
+      public const string RequestContentType = "req_content_type";
+      public const string RequestProtocol = "req_protocol";
+      public const string RequestScheme = "req_scheme";
+      public const string RequestHost = "req_host";
       public const string ResponseCode = "response_code";
       public const string ResponseContentType = "response_content_type";
+      public const string RanAction = "ran_action";
+      public const string RanResult = "ran_result";
     }
 
     private static class Fields
     {
-      public const string ActionTimeMs = "action_time";
-      public const string ResultTimeMs = "result_time";
-      public const string RequestContentLength = "request_content_length";
+      public const string ActionTime = "action_ms";
+      public const string ResultTime = "result_ms";
+      public const string MiddlewareTime = "middleware_ms";
+      public const string ExceptionTime = "exception_ms";
+      public const string RequestContentLength = "req_content_length";
+      public const string RequestCookieCount = "req_cookies";
+      public const string RequestHeaderCount = "req_headers";
+      public const string RequestPort = "req_port";
       public const string ResponseContentLength = "response_content_length";
+      public const string ResponseHeaderCount = "response_headers";
     }
 
-    // Constructors
+    // Constructor
     public ApiCallMetricBuilder(string measurement = null)
     {
       // TODO: [TESTS] (ApiCallMetricBuilder.ApiCallMetricBuilder) Add tests
       _builder = new MetricBuilder(MetricSource.ApiCall, measurement)
-        .WithTag(Tags.Controller, MetricPlaceholder.Unknown)
-        .WithTag(Tags.Action, MetricPlaceholder.Unknown)
-        .WithTag(Tags.RequestMethod, MetricPlaceholder.Unknown)
-        .WithTag(Tags.ResponseCode, MetricPlaceholder.Unknown)
-        .WithTag(Tags.RequestContentType, MetricPlaceholder.Unset)
+        // Tags
+        .WithTag(Tags.Controller, MetricPlaceholder.Unset)
+        .WithTag(Tags.Action, MetricPlaceholder.Unset)
+        .WithTag(Tags.RequestMethod, MetricPlaceholder.Unset)
+        .WithTag(Tags.RequestContentType, MetricPlaceholder.None)
+        .WithTag(Tags.RequestProtocol, MetricPlaceholder.Unset)
+        .WithTag(Tags.RequestScheme, MetricPlaceholder.Unset)
+        .WithTag(Tags.RequestHost, MetricPlaceholder.None)
+        .WithTag(Tags.ResponseCode, 0)
         .WithTag(Tags.ResponseContentType, MetricPlaceholder.Unset)
+        .WithTag(Tags.RanAction, false)
+        .WithTag(Tags.RanResult, false)
+        // Fields
+        .WithField(CoreMetricField.Value, (double)0)
+        .WithField(Fields.ActionTime, (double)0)
+        .WithField(Fields.ResultTime, (double)0)
+        .WithField(Fields.MiddlewareTime, (double)0)
+        .WithField(Fields.ExceptionTime, (double)0)
         .WithField(Fields.RequestContentLength, (long)0)
+        .WithField(Fields.RequestCookieCount, 0)
+        .WithField(Fields.RequestHeaderCount, 0)
+        .WithField(Fields.RequestPort, 0)
         .WithField(Fields.ResponseContentLength, (long)0)
-        .WithField(Fields.ActionTimeMs, (double)0)
-        .WithField(Fields.ResultTimeMs, (double)0);
+        .WithField(Fields.ResponseHeaderCount, 0);
     }
 
-    public ApiCallMetricBuilder(HttpContext httpContext)
+    public ApiCallMetricBuilder(ApiMetricRequestContext metricContext)
       : this()
     {
-      // TODO: [TESTS] (ApiCallMetricBuilder) Add tests
-      WithHttpContext(httpContext);
-
-      var requestMetricContext = httpContext.GetApiRequestMetricContext();
-      if (requestMetricContext == null)
-        return;
-
-      WithApiMetricRequestContext(requestMetricContext);
+      // TODO: [TESTS] (ApiCallMetricBuilder.ApiCallMetricBuilder) Add tests
+      WithApiMetricRequestContext(metricContext);
     }
 
 
-    // Builder methods
+    // Builder Methods
+    public ApiCallMetricBuilder WithActionTime(ApiMetricRequestContext context)
+    {
+      // TODO: [TESTS] (ApiCallMetricBuilder.WithActionTime) Add tests
+      if (context?.ActionStartTime == null || !context.ActionEndTime.HasValue)
+        return this;
+
+      if (context.ActionStartTime.Value > context.ActionEndTime.Value)
+        return this;
+
+      _builder.WithTag(Tags.RanAction, true)
+        .WithField(
+          Fields.ActionTime,
+          (context.ActionEndTime.Value - context.ActionStartTime.Value).TotalMilliseconds
+        );
+
+      return this;
+    }
+
+    public ApiCallMetricBuilder WithResultTime(ApiMetricRequestContext context)
+    {
+      // TODO: [TESTS] (ApiCallMetricBuilder.WithResultTime) Add tests
+      if (context?.ResultsStartTime == null || !context.ResultsEndTime.HasValue)
+        return this;
+
+      if (context.ResultsStartTime.Value > context.ResultsEndTime.Value)
+        return this;
+
+      _builder.WithTag(Tags.RanResult, true)
+        .WithField(
+          Fields.ResultTime,
+          (context.ResultsEndTime.Value - context.ResultsStartTime.Value).TotalMilliseconds
+        );
+
+      return this;
+    }
+
+    public ApiCallMetricBuilder WithMiddlewareTime(ApiMetricRequestContext context)
+    {
+      // TODO: [TESTS] (ApiCallMetricBuilder.WithMiddlewareTime) Add tests
+      if (context?.MiddlewareStartTime == null || !context.MiddlewareEndTime.HasValue)
+        return this;
+
+      if (context.MiddlewareStartTime.Value > context.MiddlewareEndTime.Value)
+        return this;
+
+      _builder.WithField(
+        Fields.MiddlewareTime,
+        (context.MiddlewareEndTime.Value - context.MiddlewareStartTime.Value).TotalMilliseconds
+      );
+
+      return this;
+    }
+
+    public ApiCallMetricBuilder WithExceptionTime(ApiMetricRequestContext context)
+    {
+      // TODO: [TESTS] (ApiCallMetricBuilder.WithExceptionTime) Add tests
+      if (context?.ExThrownTime == null || !context.RequestStartTime.HasValue)
+        return this;
+
+      if (context.RequestStartTime.Value > context.ExThrownTime.Value)
+        return this;
+
+      _builder.WithTag(CoreMetricTag.HasException, true)
+        .WithField(
+          Fields.ExceptionTime,
+          (context.ExThrownTime.Value - context.RequestStartTime.Value).TotalMilliseconds
+        );
+
+      return this;
+    }
+
+    public ApiCallMetricBuilder WithRequestRunTime(ApiMetricRequestContext context)
+    {
+      // TODO: [TESTS] (ApiCallMetricBuilder.WithRequestRunTime) Add tests
+      if (context?.RequestStartTime == null || !context.RequestEndTime.HasValue)
+        return this;
+
+      if (context.RequestStartTime > context.RequestEndTime)
+        return this;
+
+      _builder.WithField(
+        CoreMetricField.Value,
+        (context.RequestEndTime.Value - context.RequestStartTime.Value).TotalMilliseconds
+      );
+
+      return this;
+    }
+
+    public ApiCallMetricBuilder WithController(string controller)
+    {
+      // TODO: [TESTS] (ApiCallMetricBuilder.WithController) Add tests
+      if (!string.IsNullOrWhiteSpace(controller))
+        _builder.WithTag(Tags.Controller, controller, true);
+
+      return this;
+    }
+
+    public ApiCallMetricBuilder WithAction(string action)
+    {
+      // TODO: [TESTS] (ApiCallMetricBuilder.WithAction) Add tests
+      if (!string.IsNullOrWhiteSpace(action))
+        _builder.WithTag(Tags.Action, action, true);
+
+      return this;
+    }
+
+    public ApiCallMetricBuilder WithExceptionName(string exceptionName)
+    {
+      // TODO: [TESTS] (ApiCallMetricBuilder.WithExceptionName) Add tests
+      if (string.IsNullOrWhiteSpace(exceptionName))
+        return this;
+
+      _builder
+        .WithTag(CoreMetricTag.ExceptionName, exceptionName, true)
+        .WithTag(CoreMetricTag.HasException, true)
+        .WithTag(CoreMetricTag.Success, false);
+
+      return this;
+    }
+
+    public ApiCallMetricBuilder WithRequestMethod(string method)
+    {
+      // TODO: [TESTS] (ApiCallMetricBuilder.WithRequestMethod) Add tests
+      if (!string.IsNullOrWhiteSpace(method))
+        _builder.WithTag(Tags.RequestMethod, method, true);
+
+      return this;
+    }
+
+    public ApiCallMetricBuilder WithRequestContentType(string contentType)
+    {
+      // TODO: [TESTS] (ApiCallMetricBuilder.WithRequestContentType) Add tests
+      if (!string.IsNullOrWhiteSpace(contentType))
+        _builder.WithTag(Tags.RequestContentType, contentType);
+
+      return this;
+    }
+
+    public ApiCallMetricBuilder WithRequestProtocol(string protocol)
+    {
+      // TODO: [TESTS] (ApiCallMetricBuilder.WithRequestProtocol) Add tests
+      if (!string.IsNullOrWhiteSpace(protocol))
+        _builder.WithTag(Tags.RequestProtocol, protocol);
+
+      return this;
+    }
+
+    public ApiCallMetricBuilder WithRequestScheme(string scheme)
+    {
+      // TODO: [TESTS] (ApiCallMetricBuilder.WithRequestScheme) Add tests
+      if (!string.IsNullOrWhiteSpace(scheme))
+        _builder.WithTag(Tags.RequestScheme, scheme);
+
+      return this;
+    }
+
+    public ApiCallMetricBuilder WithRequestHost(string host)
+    {
+      // TODO: [TESTS] (ApiCallMetricBuilder.WithRequestHost) Add tests
+      if (!string.IsNullOrWhiteSpace(host))
+        _builder.WithTag(Tags.RequestHost, host);
+
+      return this;
+    }
+
+    public ApiCallMetricBuilder WithResponseCode(int responseCode)
+    {
+      // TODO: [TESTS] (ApiCallMetricBuilder.WithResponseCode) Add tests
+      _builder.WithTag(Tags.ResponseCode, responseCode);
+      return this;
+    }
+
+    public ApiCallMetricBuilder WithResponseContentType(string contentType)
+    {
+      // TODO: [TESTS] (ApiCallMetricBuilder.WithResponseContentType) Add tests
+      if (!string.IsNullOrWhiteSpace(contentType))
+        _builder.WithTag(Tags.ResponseContentType, contentType);
+
+      return this;
+    }
+
     public ApiCallMetricBuilder WithApiMetricRequestContext(ApiMetricRequestContext context)
     {
       // TODO: [TESTS] (ApiCallMetricBuilder.WithApiMetricRequestContext) Add tests
-      var exName = WorkExceptionName(context);
+      if (context == null)
+        return this;
 
       _builder
-        .WithTag(CoreMetricTag.ExceptionName, exName, true)
-        .WithTag(CoreMetricTag.HasException, exName.Length > 0)
-        .WithTag(Tags.Controller, context.Controller, true)
-        .WithTag(Tags.Action, context.Action, true)
-        .WithField(CoreMetricField.Value, WorkRequestRunTime(context))
-        .WithField(Fields.ActionTimeMs, WorkActionRunTime(context))
-        .WithField(Fields.ResultTimeMs, WorkResultRunTime(context));
+        .WithField(Fields.RequestContentLength, context.RequestContentLength)
+        .WithField(Fields.RequestCookieCount, context.RequestCookieCount)
+        .WithField(Fields.RequestHeaderCount, context.RequestHeaderCount)
+        .WithField(Fields.RequestPort, context.RequestPort)
+        .WithField(Fields.ResponseContentLength, context.ResponseContentLength)
+        .WithField(Fields.ResponseHeaderCount, context.ResponseHeaderCount);
 
-      return this;
+      return WithRequestRunTime(context)
+        .WithActionTime(context)
+        .WithResultTime(context)
+        .WithMiddlewareTime(context)
+        .WithExceptionTime(context)
+        .WithController(context.Controller)
+        .WithAction(context.Action)
+        .WithExceptionName(context.ExceptionName)
+        .WithRequestMethod(context.RequestMethod)
+        .WithRequestContentType(context.RequestContentType)
+        .WithRequestProtocol(context.RequestProtocol)
+        .WithRequestScheme(context.RequestScheme)
+        .WithRequestHost(context.RequestHost)
+        .WithResponseCode(context.ResponseCode)
+        .WithResponseContentType(context.RequestContentType);
     }
 
-    public ApiCallMetricBuilder WithHttpContext(HttpContext httpContext)
-    {
-      // TODO: [TESTS] (ApiCallMetricBuilder.WithHttpContext) Add tests
-      _builder
-        // Request related
-        .WithTag(Tags.RequestMethod, GetRequestMethod(httpContext), true)
-        .WithTag(Tags.RequestContentType, GetRequestContentType(httpContext))
-        .WithField(Fields.RequestContentLength, GetRequestContentLength(httpContext))
-        // Response Related
-        .WithTag(Tags.ResponseCode, GetResponseStatusCode(httpContext))
-        .WithTag(Tags.ResponseContentType, GetResponseContentType(httpContext))
-        .WithField(Fields.ResponseContentLength, GetResponseContentLength(httpContext));
 
-      return this;
-    }
-
+    // Build()
     public MetricBuilder Build()
     {
       return _builder;
-    }
-
-
-    // Helper methods
-    public static double WorkRequestRunTime(ApiMetricRequestContext request)
-    {
-      // TODO: [TESTS] (ApiCallMetricBuilder.WorkRequestRunTime) Add tests
-      if (!request.RequestStartTime.HasValue || !request.RequestEndTime.HasValue)
-        return 0;
-
-      if (request.RequestStartTime.Value > request.RequestEndTime.Value)
-        return 0;
-
-      return (request.RequestEndTime.Value - request.RequestStartTime.Value).TotalMilliseconds;
-    }
-
-    public static double WorkActionRunTime(ApiMetricRequestContext request)
-    {
-      // TODO: [TESTS] (ApiCallMetricBuilder.WorkActionRunTime) Add tests
-      if (request?.ActionStartTime == null || !request.ActionEndTime.HasValue)
-        return 0;
-
-      var start = request.ActionStartTime.Value;
-      var end = request.ActionEndTime.Value;
-
-      return (end - start).TotalMilliseconds;
-    }
-
-    public static double WorkResultRunTime(ApiMetricRequestContext request)
-    {
-      // TODO: [TESTS] (ApiCallMetricBuilder.WorkResultRunTime) Add tests
-      if (request?.ResultsStartTime == null || !request.ResultsEndTime.HasValue)
-        return 0;
-
-      var start = request.ResultsStartTime.Value;
-      var end = request.ResultsEndTime.Value;
-
-      return (end - start).TotalMilliseconds;
-    }
-
-    private static string GetResponseContentType(HttpContext httpContext)
-    {
-      // TODO: [TESTS] (ApiCallMetricBuilder.GetResponseContentType) Add tests
-      return httpContext?.Response?.ContentType ?? MetricPlaceholder.Unset;
-    }
-
-    private static int GetResponseStatusCode(HttpContext httpContext)
-    {
-      // TODO: [TESTS] (ApiCallMetricBuilder.GetResponseStatusCode) Add tests
-      return httpContext?.Response?.StatusCode ?? 0;
-    }
-
-    private static long GetResponseContentLength(HttpContext httpContext)
-    {
-      // TODO: [TESTS] (ApiCallMetricBuilder.GetResponseContentLength) Add tests
-      var contentLength = httpContext?.Response?.ContentLength ?? 0;
-      if (contentLength > 0)
-        return contentLength;
-
-      var bodyLength = httpContext?.Response?.Body?.Length ?? 0;
-      if (bodyLength > 0)
-        return bodyLength;
-
-      return 0;
-    }
-
-    private static string GetRequestMethod(HttpContext httpContext)
-    {
-      // TODO: [TESTS] (ApiCallMetricBuilder.GetRequestMethod) Add tests
-      var requestMethod = httpContext?.Request?.Method ?? string.Empty;
-
-      return string.IsNullOrWhiteSpace(requestMethod)
-        ? MetricPlaceholder.Unknown
-        : requestMethod.UpperTrim();
-    }
-
-    private static string GetRequestContentType(HttpContext httpContext)
-    {
-      // TODO: [TESTS] (ApiCallMetricBuilder.WorkRequestContentType) Add tests
-      return httpContext?.Request?.ContentType ?? MetricPlaceholder.None;
-    }
-
-    private static long GetRequestContentLength(HttpContext httpContext)
-    {
-      return httpContext?.Request?.ContentLength ?? 0;
-    }
-
-    private static string WorkExceptionName(ApiMetricRequestContext request)
-    {
-      // TODO: [TESTS] (ApiCallMetricBuilder.WorkExceptionName) Add tests
-      return string.IsNullOrWhiteSpace(request.ExceptionName)
-        ? string.Empty
-        : request.ExceptionName;
     }
   }
 }

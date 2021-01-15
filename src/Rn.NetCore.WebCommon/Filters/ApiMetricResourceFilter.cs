@@ -4,11 +4,11 @@ using Rn.NetCore.WebCommon.Extensions;
 
 namespace Rn.NetCore.WebCommon.Filters
 {
-  public class MetricResourceFilter : IResourceFilter
+  public class ApiMetricResourceFilter : IResourceFilter
   {
     private readonly IDateTimeAbstraction _dateTime;
 
-    public MetricResourceFilter(IDateTimeAbstraction dateTime)
+    public ApiMetricResourceFilter(IDateTimeAbstraction dateTime)
     {
       _dateTime = dateTime;
     }
@@ -16,14 +16,14 @@ namespace Rn.NetCore.WebCommon.Filters
     // Interface methods
     public void OnResourceExecuting(ResourceExecutingContext context)
     {
-      // TODO: [TESTS] (MetricResourceFilter.OnResourceExecuting) Add tests
-      context.HttpContext.SetAndGetApiRequestMetricContext(_dateTime.UtcNow)
+      // TODO: [TESTS] (ApiMetricResourceFilter.OnResourceExecuting) Add tests
+      context.HttpContext.GetApiRequestMetricContext(_dateTime.UtcNow)
         ?.WithResourceExecutingContext(context);
     }
 
     public void OnResourceExecuted(ResourceExecutedContext context)
     {
-      // TODO: [TESTS] (MetricResourceFilter.OnResourceExecuted) Add tests
+      // TODO: [TESTS] (ApiMetricResourceFilter.OnResourceExecuted) Add tests
       context.HttpContext.GetApiRequestMetricContext()
         ?.WithResourceExecutedContext(context, _dateTime.UtcNow);
     }
