@@ -9,7 +9,7 @@ namespace Rn.NetCore.Common.Metrics.Builders
   {
     private readonly MetricBuilder _builder;
     private int _queryCount, _resultsCount;
-    private readonly List<int> _customInt = new List<int> { 0, 0, 0 };
+    private readonly List<int> _customInt = new List<int> { 0, 0, 0, 0, 0 };
     private readonly List<long> _customLong = new List<long> { 0, 0, 0 };
 
     private static class Tags
@@ -48,6 +48,8 @@ namespace Rn.NetCore.Common.Metrics.Builders
         .WithField(CoreMetricField.CustomInt1, 0)
         .WithField(CoreMetricField.CustomInt2, 0)
         .WithField(CoreMetricField.CustomInt3, 0)
+        .WithField(CoreMetricField.CustomInt4, 0)
+        .WithField(CoreMetricField.CustomInt5, 0)
         .WithField(CoreMetricField.CustomLong1, (long)0)
         .WithField(CoreMetricField.CustomLong2, (long)0)
         .WithField(CoreMetricField.CustomLong3, (long)0)
@@ -271,6 +273,34 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
+    public CronMetricBuilder WithCustomInt4(int value)
+    {
+      // TODO: [TESTS] (CronMetricBuilder.WithCustomInt4) Add tests
+      _customInt[3] = value;
+      return this;
+    }
+
+    public CronMetricBuilder IncrementCustomInt4(int amount = 1)
+    {
+      // TODO: [TESTS] (CronMetricBuilder.IncrementCustomInt4) Add tests
+      _customInt[3] += amount;
+      return this;
+    }
+
+    public CronMetricBuilder WithCustomInt5(int value)
+    {
+      // TODO: [TESTS] (CronMetricBuilder.WithCustomInt5) Add tests
+      _customInt[4] = value;
+      return this;
+    }
+
+    public CronMetricBuilder IncrementCustomInt5(int amount = 1)
+    {
+      // TODO: [TESTS] (CronMetricBuilder.IncrementCustomInt5) Add tests
+      _customInt[4] += amount;
+      return this;
+    }
+
 
     // Custom Long
     public CronMetricBuilder WithCustomLong1(long value)
@@ -324,6 +354,8 @@ namespace Rn.NetCore.Common.Metrics.Builders
         .WithField(CoreMetricField.CustomInt1, _customInt[0])
         .WithField(CoreMetricField.CustomInt2, _customInt[1])
         .WithField(CoreMetricField.CustomInt3, _customInt[2])
+        .WithField(CoreMetricField.CustomInt4, _customInt[3])
+        .WithField(CoreMetricField.CustomInt5, _customInt[4])
         .WithField(CoreMetricField.CustomLong1, _customLong[0])
         .WithField(CoreMetricField.CustomLong2, _customLong[1])
         .WithField(CoreMetricField.CustomLong3, _customLong[2])
