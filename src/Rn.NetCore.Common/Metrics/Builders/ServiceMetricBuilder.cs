@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Rn.NetCore.Common.Metrics.Enums;
 using Rn.NetCore.Common.Metrics.Models;
 
@@ -7,6 +8,7 @@ namespace Rn.NetCore.Common.Metrics.Builders
   public class ServiceMetricBuilder
   {
     private readonly MetricBuilder _builder;
+    private List<int> _customInt = new List<int> {0, 0, 0, 0, 0};
     private int _queryCount;
     private int _resultsCount;
 
@@ -143,41 +145,78 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
+
     // Custom Int
     public ServiceMetricBuilder WithCustomInt1(int value)
     {
       // TODO: [TESTS] (ServiceMetricBuilder.WithCustomInt1) Add tests
-      _builder.WithCustomInt(1, value);
+      _customInt[0] = value;
+      return this;
+    }
+
+    public ServiceMetricBuilder IncrementCustomInt1(int amount = 1)
+    {
+      // TODO: [TESTS] (ServiceMetricBuilder.IncrementCustomInt1) Add tests
+      _customInt[0] += amount;
       return this;
     }
 
     public ServiceMetricBuilder WithCustomInt2(int value)
     {
       // TODO: [TESTS] (ServiceMetricBuilder.WithCustomInt2) Add tests
-      _builder.WithCustomInt(2, value);
+      _customInt[1] = value;
+      return this;
+    }
+
+    public ServiceMetricBuilder IncrementCustomInt2(int amount = 1)
+    {
+      // TODO: [TESTS] (ServiceMetricBuilder.IncrementCustomInt2) Add tests
+      _customInt[1] += amount;
       return this;
     }
 
     public ServiceMetricBuilder WithCustomInt3(int value)
     {
       // TODO: [TESTS] (ServiceMetricBuilder.WithCustomInt3) Add tests
-      _builder.WithCustomInt(3, value);
+      _customInt[2] = value;
+      return this;
+    }
+
+    public ServiceMetricBuilder IncrementCustomInt3(int amount = 1)
+    {
+      // TODO: [TESTS] (ServiceMetricBuilder.IncrementCustomInt3) Add tests
+      _customInt[2] += amount;
       return this;
     }
 
     public ServiceMetricBuilder WithCustomInt4(int value)
     {
       // TODO: [TESTS] (ServiceMetricBuilder.WithCustomInt4) Add tests
-      _builder.WithCustomInt(4, value);
+      _customInt[3] = value;
+      return this;
+    }
+
+    public ServiceMetricBuilder IncrementCustomInt4(int amount = 1)
+    {
+      // TODO: [TESTS] (ServiceMetricBuilder.IncrementCustomInt4) Add tests
+      _customInt[3] += amount;
       return this;
     }
 
     public ServiceMetricBuilder WithCustomInt5(int value)
     {
       // TODO: [TESTS] (ServiceMetricBuilder.WithCustomInt5) Add tests
-      _builder.WithCustomInt(5, value);
+      _customInt[4] = value;
       return this;
     }
+
+    public ServiceMetricBuilder IncrementCustomInt5(int amount = 1)
+    {
+      // TODO: [TESTS] (ServiceMetricBuilder.IncrementCustomInt5) Add tests
+      _customInt[4] += amount;
+      return this;
+    }
+
 
     // Custom Long
     public ServiceMetricBuilder WithCustomLong1(long value)
@@ -200,6 +239,7 @@ namespace Rn.NetCore.Common.Metrics.Builders
       _builder.WithCustomLong(3, value);
       return this;
     }
+
 
     // Custom Tags
     public ServiceMetricBuilder WithCustomTag1(object value, bool skipToLower = false)
@@ -236,6 +276,7 @@ namespace Rn.NetCore.Common.Metrics.Builders
       _builder.WithCustomTag(5, value, skipToLower);
       return this;
     }
+
 
     // Timings
     public IMetricTimingToken WithTiming()
@@ -280,6 +321,11 @@ namespace Rn.NetCore.Common.Metrics.Builders
     {
       // TODO: [TESTS] (ServiceMetricBuilder.Build) Add tests
       return _builder
+        .WithField(CoreMetricField.CustomInt1, _customInt[0])
+        .WithField(CoreMetricField.CustomInt2, _customInt[1])
+        .WithField(CoreMetricField.CustomInt3, _customInt[2])
+        .WithField(CoreMetricField.CustomInt4, _customInt[3])
+        .WithField(CoreMetricField.CustomInt5, _customInt[4])
         .WithField(Fields.QueryCount, _queryCount)
         .WithField(Fields.ResultsCount, _resultsCount);
     }

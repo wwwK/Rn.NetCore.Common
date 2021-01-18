@@ -105,12 +105,19 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
+    public MetricBuilder WithSuccess(bool success)
+    {
+      // TODO: [TESTS] (MetricBuilder.WithSuccess) Add tests
+      WithTag(CoreMetricTag.Success, success);
+      return this;
+    }
+
     public IMetricTimingToken WithTiming(string name = null)
     {
       // TODO: [TESTS] (MetricBuilder.WithTiming) Add tests
       if (string.IsNullOrWhiteSpace(name))
         name = CoreMetricField.Value;
-    
+
       return new MetricTimingToken(this, name);
     }
 
