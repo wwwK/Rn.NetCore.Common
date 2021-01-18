@@ -134,19 +134,32 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
-    public ServiceMetricBuilder MarkFailed()
+    public ServiceMetricBuilder MarkFailed(int resultsCount = -1)
     {
       // TODO: [TESTS] (ServiceMetricBuilder.MarkFailed) Add tests
       _builder.MarkFailed();
+
+      if (resultsCount > -1)
+        _resultsCount = resultsCount;
+
+      return this;
+    }
+
+    public ServiceMetricBuilder MarkSuccess(int resultsCount = -1)
+    {
+      // TODO: [TESTS] (ServiceMetricBuilder.MarkSuccess) Add tests
+      _builder.WithSuccess(true);
+
+      if (resultsCount > -1)
+        _resultsCount = resultsCount;
+
       return this;
     }
 
     public ServiceMetricBuilder MarkSuccessIfNotNull(object obj = null)
     {
       // TODO: [TESTS] (ServiceMetricBuilder.MarkSuccessIfNotNull) Add tests
-      if (obj != null)
-        _builder.WithSuccess(true);
-
+      _builder.WithSuccess(obj != null);
       return this;
     }
 
