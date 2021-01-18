@@ -8,7 +8,8 @@ namespace Rn.NetCore.Common.Metrics.Builders
   public class ServiceMetricBuilder
   {
     private readonly MetricBuilder _builder;
-    private List<int> _customInt = new List<int> {0, 0, 0, 0, 0};
+    private readonly List<int> _customInt = new List<int> { 0, 0, 0, 0, 0 };
+    private readonly List<long> _customLong = new List<long> { 0, 0, 0 };
     private int _queryCount;
     private int _resultsCount;
 
@@ -229,21 +230,42 @@ namespace Rn.NetCore.Common.Metrics.Builders
     public ServiceMetricBuilder WithCustomLong1(long value)
     {
       // TODO: [TESTS] (ServiceMetricBuilder.WithCustomLong1) Add tests
-      _builder.WithCustomLong(1, value);
+      _customLong[0] = value;
+      return this;
+    }
+
+    public ServiceMetricBuilder IncrementCustomLong1(long amount = 1)
+    {
+      // TODO: [TESTS] (ServiceMetricBuilder.IncrementCustomLong1) Add tests
+      _customLong[0] += amount;
       return this;
     }
 
     public ServiceMetricBuilder WithCustomLong2(long value)
     {
       // TODO: [TESTS] (ServiceMetricBuilder.WithCustomLong2) Add tests
-      _builder.WithCustomLong(2, value);
+      _customLong[1] = value;
+      return this;
+    }
+
+    public ServiceMetricBuilder IncrementCustomLong2(long amount = 1)
+    {
+      // TODO: [TESTS] (ServiceMetricBuilder.IncrementCustomLong2) Add tests
+      _customLong[1] += amount;
       return this;
     }
 
     public ServiceMetricBuilder WithCustomLong3(long value)
     {
       // TODO: [TESTS] (ServiceMetricBuilder.WithCustomLong3) Add tests
-      _builder.WithCustomLong(3, value);
+      _customLong[2] = value;
+      return this;
+    }
+
+    public ServiceMetricBuilder IncrementCustomLong3(long amount = 1)
+    {
+      // TODO: [TESTS] (ServiceMetricBuilder.IncrementCustomLong3) Add tests
+      _customLong[2] += amount;
       return this;
     }
 
@@ -333,6 +355,9 @@ namespace Rn.NetCore.Common.Metrics.Builders
         .WithField(CoreMetricField.CustomInt3, _customInt[2])
         .WithField(CoreMetricField.CustomInt4, _customInt[3])
         .WithField(CoreMetricField.CustomInt5, _customInt[4])
+        .WithField(CoreMetricField.CustomLong1, _customLong[0])
+        .WithField(CoreMetricField.CustomLong2, _customLong[1])
+        .WithField(CoreMetricField.CustomLong3, _customLong[2])
         .WithField(Fields.QueryCount, _queryCount)
         .WithField(Fields.ResultsCount, _resultsCount);
     }

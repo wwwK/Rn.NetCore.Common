@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Rn.NetCore.Common.Metrics.Enums;
 using Rn.NetCore.Common.Metrics.Models;
 
@@ -8,6 +9,8 @@ namespace Rn.NetCore.Common.Metrics.Builders
   {
     private readonly MetricBuilder _builder;
     private int _queryCount, _resultsCount;
+    private readonly List<int> _customInt = new List<int> { 0, 0, 0 };
+    private readonly List<long> _customLong = new List<long> { 0, 0, 0 };
 
     private static class Tags
     {
@@ -22,6 +25,7 @@ namespace Rn.NetCore.Common.Metrics.Builders
       public const string QueryCount = "query_count";
       public const string ResultsCount = "results_count";
     }
+
 
     // Constructors
     public CronMetricBuilder(string measurement = null)
@@ -141,6 +145,14 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
+    public CronMetricBuilder WithSuccess(bool success)
+    {
+      // TODO: [TESTS] (CronMetricBuilder.WithSuccess) Add tests
+      _builder.WithSuccess(success);
+      return this;
+    }
+
+
     // Timings
     public IMetricTimingToken WithTiming()
     {
@@ -178,6 +190,7 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return _builder.WithTiming(CoreMetricField.CustomTiming5);
     }
 
+
     // Custom Tags
     public CronMetricBuilder WithCustomTag1(object value, bool skipToLower = false)
     {
@@ -214,47 +227,91 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
+
     // Custom Int
     public CronMetricBuilder WithCustomInt1(int value)
     {
       // TODO: [TESTS] (CronMetricBuilder.WithCustomInt1) Add tests
-      _builder.WithCustomInt(1, value);
+      _customInt[0] = value;
+      return this;
+    }
+
+    public CronMetricBuilder IncrementCustomInt1(int amount = 1)
+    {
+      // TODO: [TESTS] (CronMetricBuilder.IncrementCustomInt1) Add tests
+      _customInt[0] += amount;
       return this;
     }
 
     public CronMetricBuilder WithCustomInt2(int value)
     {
       // TODO: [TESTS] (CronMetricBuilder.WithCustomInt2) Add tests
-      _builder.WithCustomInt(2, value);
+      _customInt[1] = value;
+      return this;
+    }
+
+    public CronMetricBuilder IncrementCustomInt2(int amount = 1)
+    {
+      // TODO: [TESTS] (CronMetricBuilder.IncrementCustomInt2) Add tests
+      _customInt[1] += amount;
       return this;
     }
 
     public CronMetricBuilder WithCustomInt3(int value)
     {
       // TODO: [TESTS] (CronMetricBuilder.WithCustomInt3) Add tests
-      _builder.WithCustomInt(3, value);
+      _customInt[2] = value;
       return this;
     }
+
+    public CronMetricBuilder IncrementCustomInt3(int amount = 1)
+    {
+      // TODO: [TESTS] (CronMetricBuilder.IncrementCustomInt3) Add tests
+      _customInt[2] += amount;
+      return this;
+    }
+
 
     // Custom Long
     public CronMetricBuilder WithCustomLong1(long value)
     {
       // TODO: [TESTS] (CronMetricBuilder.WithCustomLong1) Add tests
-      _builder.WithCustomLong(1, value);
+      _customLong[0] = value;
+      return this;
+    }
+
+    public CronMetricBuilder IncrementCustomLong1(long amount = 0)
+    {
+      // TODO: [TESTS] (CronMetricBuilder.IncrementCustomLong1) Add tests
+      _customLong[0] += amount;
       return this;
     }
 
     public CronMetricBuilder WithCustomLong2(long value)
     {
       // TODO: [TESTS] (CronMetricBuilder.WithCustomLong2) Add tests
-      _builder.WithCustomLong(2, value);
+      _customLong[1] = value;
+      return this;
+    }
+
+    public CronMetricBuilder IncrementCustomLong2(long amount = 0)
+    {
+      // TODO: [TESTS] (CronMetricBuilder.IncrementCustomLong2) Add tests
+      _customLong[1] += amount;
       return this;
     }
 
     public CronMetricBuilder WithCustomLong3(long value)
     {
       // TODO: [TESTS] (CronMetricBuilder.WithCustomLong3) Add tests
-      _builder.WithCustomLong(3, value);
+      _customLong[2] = value;
+      return this;
+    }
+
+    public CronMetricBuilder IncrementCustomLong3(long amount = 0)
+    {
+      // TODO: [TESTS] (CronMetricBuilder.IncrementCustomLong3) Add tests
+      _customLong[2] += amount;
       return this;
     }
 
@@ -264,6 +321,12 @@ namespace Rn.NetCore.Common.Metrics.Builders
     {
       // TODO: [TESTS] (CronMetricBuilder.Build) Add tests
       return _builder
+        .WithField(CoreMetricField.CustomInt1, _customInt[0])
+        .WithField(CoreMetricField.CustomInt2, _customInt[1])
+        .WithField(CoreMetricField.CustomInt3, _customInt[2])
+        .WithField(CoreMetricField.CustomLong1, _customLong[0])
+        .WithField(CoreMetricField.CustomLong2, _customLong[1])
+        .WithField(CoreMetricField.CustomLong3, _customLong[2])
         .WithField(Fields.QueryCount, _queryCount)
         .WithField(Fields.ResultsCount, _resultsCount);
     }

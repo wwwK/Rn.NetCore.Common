@@ -144,6 +144,13 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
+    public RepoMetricBuilder WithSuccess(bool success)
+    {
+      // TODO: [TESTS] (RepoMetricBuilder.WithSuccess) Add tests
+      _builder.WithSuccess(success);
+      return this;
+    }
+
 
     // Timing methods
     public IMetricTimingToken WithTiming()
