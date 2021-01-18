@@ -34,4 +34,27 @@ namespace Rn.NetCore.Common.Metrics.Models
       _builder.WithField(FieldName, _stopwatch.ElapsedMilliseconds);
     }
   }
+
+  public class NullMetricTimingToken : IMetricTimingToken
+  {
+    public string FieldName { get; }
+
+    public NullMetricTimingToken()
+    {
+      // TODO: [TESTS] (NullMetricTimingToken) Add tests
+      FieldName = string.Empty;
+    }
+
+    public NullMetricTimingToken(string fieldName)
+      : this()
+    {
+      // TODO: [TESTS] (NullMetricTimingToken) Add tests
+      FieldName = fieldName;
+    }
+
+    public void Dispose()
+    {
+      // Swallow
+    }
+  }
 }
