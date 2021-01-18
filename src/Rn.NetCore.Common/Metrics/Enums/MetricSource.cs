@@ -5,6 +5,7 @@
     RepoCall,
     ServiceCall,
     CronJob,
-    ApiCall
+    ApiCall,
+    Client
   }
 }
