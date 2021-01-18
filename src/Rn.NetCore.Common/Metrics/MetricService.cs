@@ -103,7 +103,12 @@ namespace Rn.NetCore.Common.Metrics
       // TODO: [TESTS] (MetricService.SubmitPointAsync) Add tests
       if (!Enabled) { return; }
 
+      // Ensure that we are working with a valid metric point
       FinalizePoint(point);
+      if (!point.IsValidPoint)
+        return;
+
+      // Dispatch the point to all enabled outputs
       foreach (var output in _outputs)
       {
         await output.SubmitPoint(point);
@@ -134,6 +139,9 @@ namespace Rn.NetCore.Common.Metrics
 
       if (safeSource.IgnoreCaseEquals(MetricSource.Client.ToString("G")))
         return "client";
+
+      if (safeSource.IgnoreCaseEquals(MetricSource.Custom.ToString("G")))
+        return "custom";
 
       // Unknown / Unhandled metric source
       _logger.Warning("Unable to resolve '{type}' to known measurement - using {final}",
@@ -173,11 +181,21 @@ namespace Rn.NetCore.Common.Metrics
       if (point.Measurement.Contains("resolve:"))
         finalMeasurement = ResolveMeasurement(point);
 
+      if (point.GetMetricSource() == MetricSource.Custom && point.Measurement.Contains("resolve:"))
+      {
+        _logger.Warning(
+          "Unable to resolve custom metric point '{measurement}' - dropping",
+          point.Measurement
+        );
+
+        return;
+      }
+
       finalMeasurement = finalMeasurement
         .Replace("{app}", _config.ApplicationName)
         .Replace("{mode}", _devPlaceholderValue);
 
-      point.ReplaceMeasurement(finalMeasurement);
+      point.ReplaceMeasurement(finalMeasurement, true);
     }
 
 
@@ -232,6 +250,7 @@ namespace Rn.NetCore.Common.Metrics
       SetMeasurement(config, MetricSource.CronJob, "cron_job");
       SetMeasurement(config, MetricSource.ApiCall, "api_call");
       SetMeasurement(config, MetricSource.Client, "client");
+      SetMeasurement(config, MetricSource.Custom, "custom");
     }
 
     private static void SetMeasurement(MetricsConfig config, MetricSource source, string builderType)

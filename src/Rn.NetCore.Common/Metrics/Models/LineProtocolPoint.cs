@@ -12,6 +12,7 @@ namespace Rn.NetCore.Common.Metrics.Models
     public IReadOnlyDictionary<string, object> Fields { get; }
     public IReadOnlyDictionary<string, string> Tags { get; }
     public DateTime? UtcTimestamp { get; }
+    public bool IsValidPoint { get; private set; }
 
     public LineProtocolPoint(
       string measurement,
@@ -30,14 +31,16 @@ namespace Rn.NetCore.Common.Metrics.Models
       Fields = fields;
       Tags = tags;
       UtcTimestamp = utcTimestamp;
+      IsValidPoint = false;
     }
 
     
     // Public methods
-    public void ReplaceMeasurement(string measurement)
+    public void ReplaceMeasurement(string measurement, bool isValidPoint)
     {
       // TODO: [TESTS] (LineProtocolPoint.ReplaceMeasurement) Add tests
       Measurement = measurement;
+      IsValidPoint = isValidPoint;
     }
 
     public void Format(TextWriter textWriter)

@@ -6,6 +6,8 @@
     ServiceCall,
     CronJob,
     ApiCall,
-    Client
+    Client,
+    Custom,
+    Unknown
   }
 }
