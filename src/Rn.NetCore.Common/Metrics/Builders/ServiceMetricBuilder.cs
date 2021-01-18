@@ -145,6 +145,13 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
+    public ServiceMetricBuilder WithSuccess(bool success)
+    {
+      // TODO: [TESTS] (ServiceMetricBuilder.WithSuccess) Add tests
+      _builder.WithSuccess(success);
+      return this;
+    }
+
 
     // Custom Int
     public ServiceMetricBuilder WithCustomInt1(int value)
