@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -10,10 +9,8 @@ using Rn.NetCore.Common.Encryption;
 using Rn.NetCore.Common.Helpers;
 using Rn.NetCore.Common.Logging;
 using Rn.NetCore.Common.Metrics;
-using Rn.NetCore.Common.Metrics.Builders;
 using Rn.NetCore.Common.Metrics.Interfaces;
 using Rn.NetCore.Common.Metrics.Outputs;
-using Rn.NetCore.Metrics.Rabbit;
 
 namespace DevConsole
 {
@@ -26,21 +23,9 @@ namespace DevConsole
     {
       ConfigureDI();
 
-      var builder = new ServiceMetricBuilder("Service", "Method")
-        .WithCategory("Category", "SubCategory")
-        .WithCustomTag1(true)
-        .WithCustomInt1(10);
+      var path = _serviceProvider.GetRequiredService<IPathAbstraction>();
 
-      IMetricService metrics;
-      using (builder.WithTiming())
-      {
-        metrics = _serviceProvider.GetRequiredService<IMetricService>();
-      }
-
-      for (var i = 0; i < 200; i++)
-      {
-        metrics.SubmitPoint(builder.Build());
-      }
+      var tempFileName = path.GetTempFileName();
 
       _logger.Info("All Done!");
     }
@@ -95,9 +80,6 @@ namespace DevConsole
     {
       services
         .AddSingleton<IMetricService, MetricService>()
-        .AddSingleton<IMetricOutput, RabbitMetricOutput>()
-        .AddSingleton<IRabbitConnection, RabbitConnection>()
-        .AddSingleton<IRabbitFactory, RabbitFactory>()
         .AddSingleton<IMetricOutput, CsvMetricOutput>();
     }
   }

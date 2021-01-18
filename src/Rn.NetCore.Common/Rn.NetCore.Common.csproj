@@ -4,13 +4,14 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>Rn.NetCore.Common</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.0.0.120</Version>
+    <Version>3.0.0.121</Version>
     <Company>Richard Niemand</Company>
     <Description>Core libs for my various projects</Description>
-    <AssemblyVersion>3.0.0.120</AssemblyVersion>
-    <FileVersion>3.0.0.120</FileVersion>
+    <AssemblyVersion>3.0.0.121</AssemblyVersion>
+    <FileVersion>3.0.0.121</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Authors>Richard Niemand</Authors>
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>
