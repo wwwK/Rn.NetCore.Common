@@ -8,7 +8,7 @@ namespace Rn.NetCore.Common.Metrics.Builders
   public class ServiceMetricBuilder
   {
     private readonly MetricBuilder _builder;
-    private readonly List<int> _customInt = new List<int> { 0, 0, 0, 0, 0 };
+    private readonly List<int> _customInt = new List<int> { 0, 0, 0, 0, 0, 0 };
     private readonly List<long> _customLong = new List<long> { 0, 0, 0 };
     private int _queryCount;
     private int _resultsCount;
@@ -48,11 +48,13 @@ namespace Rn.NetCore.Common.Metrics.Builders
         .WithField(CoreMetricField.CustomTiming3, (long)0)
         .WithField(CoreMetricField.CustomTiming4, (long)0)
         .WithField(CoreMetricField.CustomTiming5, (long)0)
+        .WithField(CoreMetricField.CustomTiming6, (long)0)
         .WithField(CoreMetricField.CustomInt1, 0)
         .WithField(CoreMetricField.CustomInt2, 0)
         .WithField(CoreMetricField.CustomInt3, 0)
         .WithField(CoreMetricField.CustomInt4, 0)
         .WithField(CoreMetricField.CustomInt5, 0)
+        .WithField(CoreMetricField.CustomInt6, 0)
         .WithField(CoreMetricField.CustomLong1, (long)0)
         .WithField(CoreMetricField.CustomLong2, (long)0)
         .WithField(CoreMetricField.CustomLong3, (long)0)
@@ -225,6 +227,20 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
+    public ServiceMetricBuilder WithCustomInt6(int value)
+    {
+      // TODO: [TESTS] (ServiceMetricBuilder.WithCustomInt6) Add tests
+      _customInt[5] = value;
+      return this;
+    }
+
+    public ServiceMetricBuilder IncrementCustomInt6(int amount = 1)
+    {
+      // TODO: [TESTS] (ServiceMetricBuilder.IncrementCustomInt6) Add tests
+      _customInt[5] += amount;
+      return this;
+    }
+
 
     // Custom Long
     public ServiceMetricBuilder WithCustomLong1(long value)
@@ -342,6 +358,12 @@ namespace Rn.NetCore.Common.Metrics.Builders
     {
       // TODO: [TESTS] (ServiceMetricBuilder.WithCustomTiming5) Add tests
       return _builder.WithTiming(CoreMetricField.CustomTiming5);
+    }
+
+    public IMetricTimingToken WithCustomTiming6()
+    {
+      // TODO: [TESTS] (ServiceMetricBuilder.WithCustomTiming6) Add tests
+      return _builder.WithTiming(CoreMetricField.CustomTiming6);
     }
 
 
