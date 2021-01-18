@@ -141,6 +141,15 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
+    public ServiceMetricBuilder MarkSuccessIfNotNull(object obj = null)
+    {
+      // TODO: [TESTS] (ServiceMetricBuilder.MarkSuccessIfNotNull) Add tests
+      if (obj != null)
+        _builder.WithSuccess(true);
+      
+      return this;
+    }
+
     public ServiceMetricBuilder WithUserId(int userId)
     {
       // TODO: [TESTS] (ServiceMetricBuilder.WithUserId) Add tests
