@@ -146,7 +146,7 @@ namespace Rn.NetCore.Common.Metrics.Builders
       // TODO: [TESTS] (ServiceMetricBuilder.MarkSuccessIfNotNull) Add tests
       if (obj != null)
         _builder.WithSuccess(true);
-      
+
       return this;
     }
 
