@@ -24,6 +24,7 @@ namespace Rn.NetCore.Common.Metrics.Configuration
     [JsonProperty("ProductionModeValue"), JsonPropertyName("ProductionModeValue")]
     public string ProductionModeValue { get; set; }
 
+    [JsonProperty("Measurements"), JsonPropertyName("Measurements")]
     public Dictionary<string, string> Measurements { get; set; }
 
     public MetricsConfig()
@@ -32,7 +33,7 @@ namespace Rn.NetCore.Common.Metrics.Configuration
       Enabled = false;
       DevelopmentMode = false;
       ApplicationName = string.Empty;
-      MeasurementTemplate = string.Empty;
+      MeasurementTemplate = "{app}/{mode}/{type}";
       DevelopmentModeValue = "dev";
       ProductionModeValue = "production";
       Measurements = new Dictionary<string, string>();
