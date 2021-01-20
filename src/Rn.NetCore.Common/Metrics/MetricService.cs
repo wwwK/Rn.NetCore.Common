@@ -181,7 +181,7 @@ namespace Rn.NetCore.Common.Metrics
       if (point.Measurement.Contains("resolve:"))
         finalMeasurement = ResolveMeasurement(point);
 
-      if (point.GetMetricSource() == MetricSource.Custom && point.Measurement.Contains("resolve:"))
+      if (point.GetMetricSource() == MetricSource.Custom && finalMeasurement.Contains("resolve:"))
       {
         _logger.Warning(
           "Unable to resolve custom metric point '{measurement}' - dropping",
