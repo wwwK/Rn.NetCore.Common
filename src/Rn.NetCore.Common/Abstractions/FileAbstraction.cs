@@ -13,6 +13,7 @@ namespace Rn.NetCore.Common.Abstractions
     void WriteAllText(string path, string contents, Encoding encoding);
     void Copy(string sourceFileName, string destFileName);
     void Move(string sourceFileName, string destFileName);
+    void WriteAllBytes(string path, byte[] bytes);
     IFileInfo GetFileInfo(string fileName);
   }
 
@@ -38,6 +39,9 @@ namespace Rn.NetCore.Common.Abstractions
 
     public void Move(string sourceFileName, string destFileName)
       => File.Move(sourceFileName, destFileName);
+
+    public void WriteAllBytes(string path, byte[] bytes)
+      => File.WriteAllBytes(path, bytes);
 
     public IFileInfo GetFileInfo(string fileName)
       => new FileInfoWrapper(new FileInfo(fileName));
