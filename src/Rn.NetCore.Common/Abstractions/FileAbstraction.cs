@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using Rn.NetCore.Common.Wrappers;
 
 namespace Rn.NetCore.Common.Abstractions
@@ -14,6 +15,7 @@ namespace Rn.NetCore.Common.Abstractions
     void Copy(string sourceFileName, string destFileName);
     void Move(string sourceFileName, string destFileName);
     void WriteAllBytes(string path, byte[] bytes);
+    Task WriteAllBytesAsync(string path, byte[] bytes);
     IFileInfo GetFileInfo(string fileName);
   }
 
@@ -42,6 +44,9 @@ namespace Rn.NetCore.Common.Abstractions
 
     public void WriteAllBytes(string path, byte[] bytes)
       => File.WriteAllBytes(path, bytes);
+
+    public async Task WriteAllBytesAsync(string path, byte[] bytes)
+      => await File.WriteAllBytesAsync(path, bytes);
 
     public IFileInfo GetFileInfo(string fileName)
       => new FileInfoWrapper(new FileInfo(fileName));
