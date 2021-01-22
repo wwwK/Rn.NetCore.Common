@@ -11,6 +11,7 @@ namespace Rn.NetCore.Common.Services
   {
     Task<HttpResponseMessage> GetUrlAsync(string url);
     Task<HttpResponseMessage> SendAsync(HttpRequestMessage requestMessage, int timeoutMs = 10000);
+    Task<byte[]> GetByteArrayAsync(string requestUri);
   }
 
   public class BasicHttpService : IBasicHttpService
@@ -54,6 +55,12 @@ namespace Rn.NetCore.Common.Services
         requestMessage.SetTimeout(TimeSpan.FromMilliseconds(timeoutMs));
 
       return await _httpClient.SendAsync(requestMessage);
+    }
+
+    public async Task<byte[]> GetByteArrayAsync(string requestUri)
+    {
+      // TODO: [TESTS] (BasicHttpService.GetByteArrayAsync) Add tests
+      return await _httpClient.GetByteArrayAsync(requestUri);
     }
   }
 
