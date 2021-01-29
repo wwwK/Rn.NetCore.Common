@@ -1,4 +1,6 @@
-﻿namespace Rn.NetCore.Common.Extensions
+﻿using System;
+
+namespace Rn.NetCore.Common.Extensions
 {
   public static class StringExtensions
   {
@@ -23,6 +25,14 @@
         return input;
 
       return input.ToLower().Trim();
+    }
+
+    public static string UpperTrim(this string input)
+    {
+      // TODO: [TESTS] (StringExtensions.UpperTrim) Add tests
+      return string.IsNullOrWhiteSpace(input)
+        ? string.Empty
+        : input.ToUpper().Trim();
     }
 
     public static bool AsBool(this string input, bool fallback = false)
@@ -66,6 +76,18 @@
       }
 
       return fallback;
+    }
+
+    public static bool IgnoreCaseEquals(this string value, string compare)
+    {
+      // TODO: [TESTS] (StringExtensions.IgnoreCaseEquals) Add tests
+      return value.Equals(compare, StringComparison.InvariantCultureIgnoreCase);
+    }
+
+    public static bool IgnoreCaseContains(this string value, string contains)
+    {
+      // TODO: [TESTS] (StringExtensions.IgnoreCaseContains) Add tests
+      return value.Contains(contains, StringComparison.InvariantCultureIgnoreCase);
     }
   }
 }
