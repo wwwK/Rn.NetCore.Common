@@ -12,9 +12,16 @@ namespace Rn.NetCore.Common.Abstractions
 
   public class EnvironmentAbstraction : IEnvironmentAbstraction
   {
-    public string MachineName => Environment.MachineName;
-    public string NewLine => Environment.NewLine;
-    public string CurrentDirectory => Environment.CurrentDirectory;
-    public string AppDomainBaseDirectory => AppDomain.CurrentDomain.BaseDirectory;
+    public string MachineName 
+      => Environment.MachineName;
+    
+    public string NewLine 
+      => Environment.NewLine;
+    
+    public string CurrentDirectory 
+      => Environment.CurrentDirectory;
+    
+    public string AppDomainBaseDirectory
+      => AppDomain.CurrentDomain.BaseDirectory;
   }
 }

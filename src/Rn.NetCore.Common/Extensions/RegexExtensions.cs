@@ -20,5 +20,12 @@ namespace Rn.NetCore.Common.Extensions
 
       return Regex.Match(input, pattern, RegexOptions.IgnoreCase | RegexOptions.Multiline);
     }
+
+    public static MatchCollection GetRegexMatches(this string input, string pattern)
+    {
+      // TODO: [TESTS] (RegexExtensions.GetRegexMatches) Add tests
+
+      return Regex.Matches(input, pattern, RegexOptions.IgnoreCase | RegexOptions.Multiline);
+    }
   }
 }

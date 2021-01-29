@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -10,9 +9,8 @@ using Rn.NetCore.Common.Encryption;
 using Rn.NetCore.Common.Helpers;
 using Rn.NetCore.Common.Logging;
 using Rn.NetCore.Common.Metrics;
-using Rn.NetCore.Common.Metrics.Builders;
 using Rn.NetCore.Common.Metrics.Interfaces;
-using Rn.NetCore.Metrics.Rabbit;
+using Rn.NetCore.Common.Metrics.Outputs;
 
 namespace DevConsole
 {
@@ -25,21 +23,11 @@ namespace DevConsole
     {
       ConfigureDI();
 
-      var metrics = _serviceProvider.GetRequiredService<IMetricService>();
+      var path = _serviceProvider.GetRequiredService<IPathAbstraction>();
 
-      var builder = new MetricLineBuilder("app/dev/service")
-        .WithTag("host", Environment.MachineName)
-        .WithField("value", 10)
-        .WithField("annoyed", 100);
+      var tempFileName = path.GetTempFileName();
 
-      for (var i = 0; i < 200; i++)
-      {
-        Console.WriteLine("submitting point...");
-        metrics.SubmitPoint(builder);
-        Thread.Sleep(1000);
-      }
-
-      _logger.Info("Hello World!");
+      _logger.Info("All Done!");
     }
 
 
@@ -73,6 +61,7 @@ namespace DevConsole
         .AddSingleton<IEnvironmentAbstraction, EnvironmentAbstraction>()
         .AddSingleton<IDirectoryAbstraction, DirectoryAbstraction>()
         .AddSingleton<IFileAbstraction, FileAbstraction>()
+        .AddSingleton<IPathAbstraction, PathAbstraction>()
         .AddLogging(loggingBuilder =>
         {
           // configure Logging with NLog
@@ -91,9 +80,7 @@ namespace DevConsole
     {
       services
         .AddSingleton<IMetricService, MetricService>()
-        .AddSingleton<IMetricOutput, RabbitMetricOutput>()
-        .AddSingleton<IRabbitConnection, RabbitConnection>()
-        .AddSingleton<IRabbitFactory, RabbitFactory>();
+        .AddSingleton<IMetricOutput, CsvMetricOutput>();
     }
   }
 }
