@@ -90,9 +90,9 @@ namespace Rn.NetCore.Common.Extensions
       return value.Contains(contains, StringComparison.InvariantCultureIgnoreCase);
     }
 
-    public static string UseIfNullOrWhiteSpace(this string input, string fallback)
+    public static string FallbackTo(this string input, string fallback)
     {
-      // TODO: [TESTS] (StringExtensions.UseIfNullOrWhiteSpace) Add tests
+      // TODO: [TESTS] (StringExtensions.FallbackTo) Add tests
       return string.IsNullOrWhiteSpace(input.LowerTrim()) ? fallback : input;
     }
   }
