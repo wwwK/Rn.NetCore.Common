@@ -3,16 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.0.0.101</Version>
+    <Version>1.0.0.103</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Authors>Richard Niemand</Authors>
-    <Company>Richard Niemand</Company>
     <Description>Core libs for my various projects</Description>
-    <NeutralLanguage>en</NeutralLanguage>
+    <AssemblyVersion>1.0.0.103</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="RabbitMQ.Client" Version="6.2.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Rn.NetCore.Common" Version="3.0.0.120" />
   </ItemGroup>
 
