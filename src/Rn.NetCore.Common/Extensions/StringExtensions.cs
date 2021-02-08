@@ -89,5 +89,11 @@ namespace Rn.NetCore.Common.Extensions
       // TODO: [TESTS] (StringExtensions.IgnoreCaseContains) Add tests
       return value.Contains(contains, StringComparison.InvariantCultureIgnoreCase);
     }
+
+    public static string UseIfNullOrWhiteSpace(this string input, string fallback)
+    {
+      // TODO: [TESTS] (StringExtensions.UseIfNullOrWhiteSpace) Add tests
+      return string.IsNullOrWhiteSpace(input.LowerTrim()) ? fallback : input;
+    }
   }
 }
