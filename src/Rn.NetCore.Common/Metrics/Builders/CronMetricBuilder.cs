@@ -12,7 +12,7 @@ namespace Rn.NetCore.Common.Metrics.Builders
     private readonly List<int> _customInt = new List<int> { 0, 0, 0, 0, 0 };
     private readonly List<long> _customLong = new List<long> { 0, 0, 0 };
 
-    private static class Tags
+    public static class Tags
     {
       public const string CronClass = "cron_class";
       public const string CronMethod = "cron_method";
@@ -20,7 +20,7 @@ namespace Rn.NetCore.Common.Metrics.Builders
       public const string SubCategory = "sub_category";
     }
 
-    private static class Fields
+    public static class Fields
     {
       public const string QueryCount = "query_count";
       public const string ResultsCount = "results_count";

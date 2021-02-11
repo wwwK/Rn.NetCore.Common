@@ -13,7 +13,7 @@ namespace Rn.NetCore.Common.Metrics.Builders
     private int _queryCount;
     private int _resultsCount;
 
-    private static class Tags
+    public static class Tags
     {
       public const string ServiceName = "service_name";
       public const string ServiceMethod = "service_method";
@@ -21,7 +21,7 @@ namespace Rn.NetCore.Common.Metrics.Builders
       public const string SubCategory = "sub_category";
     }
 
-    private static class Fields
+    public static class Fields
     {
       public const string QueryCount = "query_count";
       public const string ResultsCount = "results_count";
