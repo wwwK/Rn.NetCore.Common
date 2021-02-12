@@ -15,6 +15,7 @@ namespace Rn.NetCore.Common.Abstractions
     IDictionary GetEnvironmentVariables(EnvironmentVariableTarget target);
     string GetEnvironmentVariable(string variable);
     string GetEnvironmentVariable(string variable, EnvironmentVariableTarget target);
+    void Exit(int exitCode);
   }
 
   public class EnvironmentAbstraction : IEnvironmentAbstraction
@@ -45,5 +46,8 @@ namespace Rn.NetCore.Common.Abstractions
 
     public string GetEnvironmentVariable(string variable, EnvironmentVariableTarget target)
       => Environment.GetEnvironmentVariable(variable, target);
+
+    public void Exit(int exitCode)
+      => Environment.Exit(exitCode);
   }
 }
