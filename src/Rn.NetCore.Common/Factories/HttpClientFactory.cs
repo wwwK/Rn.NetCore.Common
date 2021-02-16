@@ -5,21 +5,21 @@ namespace Rn.NetCore.Common.Factories
 {
   public interface IHttpClientFactory
   {
-    IHttpClient NewHttpClient();
-    IHttpClient NewHttpClient(TimeoutHandler timeoutHandler);
+    IHttpClient CreateHttpClient();
+    IHttpClient CreateHttpClient(TimeoutHandler timeoutHandler);
   }
 
   public class HttpClientFactory : IHttpClientFactory
   {
-    public IHttpClient NewHttpClient()
+    public IHttpClient CreateHttpClient()
     {
-      // TODO: [TESTS] (HttpClientFactory.NewHttpClient) Add tests
+      // TODO: [TESTS] (HttpClientFactory.CreateHttpClient) Add tests
       return new HttpClientWrapper();
     }
 
-    public IHttpClient NewHttpClient(TimeoutHandler timeoutHandler)
+    public IHttpClient CreateHttpClient(TimeoutHandler timeoutHandler)
     {
-      // TODO: [TESTS] (HttpClientFactory.NewHttpClient) Add tests
+      // TODO: [TESTS] (HttpClientFactory.CreateHttpClient) Add tests
       return new HttpClientWrapper(timeoutHandler);
     }
   }
