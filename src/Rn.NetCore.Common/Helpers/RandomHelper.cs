@@ -7,6 +7,10 @@ namespace Rn.NetCore.Common.Helpers
   {
     string RandomString(int length);
     string RandomString(int length, string seed);
+    int RandomInt(int min, int max);
+    int RandomInt(int max);
+    float RandomFloat(float min, float max);
+    double RandomDouble(double min, double max);
   }
 
   public class RandomHelper : IRandomHelper
@@ -34,6 +38,31 @@ namespace Rn.NetCore.Common.Helpers
         .Select(s => s[_random.Next(s.Length)])
         .ToArray()
       );
+    }
+
+    public int RandomInt(int min, int max)
+    {
+      // TODO: [TESTS] (RandomHelper.RandomInt) Add tests
+      return _random.Next(min, max);
+    }
+
+    public int RandomInt(int max)
+    {
+      // TODO: [TESTS] (RandomHelper.RandomInt) Add tests
+      return _random.Next(max);
+    }
+
+    public float RandomFloat(float min, float max)
+    {
+      // TODO: [TESTS] (RandomHelper.RandomFloat) Add tests
+      var val = (_random.NextDouble() * (max - min) + min);
+      return (float)val;
+    }
+
+    public double RandomDouble(double min, double max)
+    {
+      // TODO: [TESTS] (RandomHelper.RandomDouble) Add tests
+      return (_random.NextDouble() * (max - min) + min);
     }
   }
 }
