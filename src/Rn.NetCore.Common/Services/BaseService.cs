@@ -1,18 +1,18 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Rn.NetCore.Common.Logging;
 using Rn.NetCore.Common.Metrics;
 
 namespace Rn.NetCore.Common.Services
 {
   public abstract class BaseService<TService>
   {
-    public ILogger<TService> Logger { get; }
+    public ILoggerAdapter<TService> Logger { get; }
     public IMetricService MetricService { get; }
     public string ServiceName { get; }
 
 
     // Constructor
     protected BaseService(
-      ILogger<TService> logger,
+      ILoggerAdapter<TService> logger,
       IMetricService metricService,
       string serviceName)
     {
