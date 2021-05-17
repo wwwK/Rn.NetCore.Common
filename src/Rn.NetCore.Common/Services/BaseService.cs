@@ -6,18 +6,18 @@ namespace Rn.NetCore.Common.Services
   public abstract class BaseService<TService>
   {
     public ILoggerAdapter<TService> Logger { get; }
-    public IMetricService MetricService { get; }
+    public IMetricService Metrics { get; }
     public string ServiceName { get; }
 
 
     // Constructor
     protected BaseService(
       ILoggerAdapter<TService> logger,
-      IMetricService metricService,
+      IMetricService metrics,
       string serviceName)
     {
       Logger = logger;
-      MetricService = metricService;
+      Metrics = metrics;
       ServiceName = serviceName;
     }
 
@@ -95,7 +95,7 @@ namespace Rn.NetCore.Common.Services
     //  // TODO: [LOGGING] (BaseService) Add logging
 
     //  // Metrics are not enabled, return "NullCodeTimer"
-    //  if (!MetricService.MetricsEnabled)
+    //  if (!Metrics.MetricsEnabled)
     //    return new NullCodeTimer();
 
     //  // Generate expected tags
@@ -115,7 +115,7 @@ namespace Rn.NetCore.Common.Services
     //  };
 
     //  // Return the generated CodeTimer
-    //  return MetricService.LogTiming("service_call", tags, fields);
+    //  return Metrics.LogTiming("service_call", tags, fields);
     //}
   }
 }
