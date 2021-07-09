@@ -59,8 +59,8 @@ foreach ($testProject in $testProjects) {
   $dllFileName = $testProject.BaseName + ".dll";
   $currentPublishDir = Join-Path $testPublishDir $testProject.BaseName
   $buildCmd = "dotnet build `"$testProject`" --configuration $buildConfiguration";
-  Write-Host "Running Build: $dllFileName";
-  Invoke-Expression $buildCmd;
+  #Write-Host "Running Build: $dllFileName";
+  #Invoke-Expression $buildCmd;
 
   $searchPath    = Join-Path $testProject.Directory "bin\$buildConfiguration\"
   $dllFiles      = Get-ChildItem -Path $searchPath -Include $dllFileName -Recurse -File
