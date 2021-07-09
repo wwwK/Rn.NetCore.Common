@@ -72,30 +72,31 @@ namespace Rn.NetCore.Common.Metrics.Outputs
     private async Task WritePoints(IEnumerable<LineProtocolPoint> points)
     {
       // TODO: [TESTS] (CsvMetricOutput.WritePoints) Add tests
-      var filePath = GenerateCsvFilePath();
-      var fileDirectory = _path.GetDirectoryName(filePath);
-
-      if (!_directory.Exists(fileDirectory))
-        _directory.CreateDirectory(fileDirectory);
-
-      var fileExists = _file.Exists(filePath);
-
-      await using var writer = new StreamWriter(filePath, true, Encoding.UTF8);
-      await using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-      csv.Configuration.RegisterClassMap<LineProtocolPointMap>();
-      csv.Configuration.ShouldQuote = (s, context) => true;
-
-      if (!fileExists)
-      {
-        csv.WriteHeader<LineProtocolPoint>();
-        await csv.NextRecordAsync();
-      }
-
-      foreach (var point in points)
-      {
-        csv.WriteRecord(point);
-        await csv.NextRecordAsync();
-      }
+      // TODO: [FIX] (CsvMetricOutput.WritePoints) FIX
+      // var filePath = GenerateCsvFilePath();
+      // var fileDirectory = _path.GetDirectoryName(filePath);
+      //
+      // if (!_directory.Exists(fileDirectory))
+      //   _directory.CreateDirectory(fileDirectory);
+      //
+      // var fileExists = _file.Exists(filePath);
+      //
+      // await using var writer = new StreamWriter(filePath, true, Encoding.UTF8);
+      // await using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+      // csv.Configuration.RegisterClassMap<LineProtocolPointMap>();
+      // csv.Configuration.ShouldQuote = (s, context) => true;
+      //
+      // if (!fileExists)
+      // {
+      //   csv.WriteHeader<LineProtocolPoint>();
+      //   await csv.NextRecordAsync();
+      // }
+      //
+      // foreach (var point in points)
+      // {
+      //   csv.WriteRecord(point);
+      //   await csv.NextRecordAsync();
+      // }
     }
 
 
