@@ -9,7 +9,7 @@ namespace Rn.NetCore.Common.Metrics.Builders
     private readonly MetricBuilder _builder;
     private int _queryCount, _resultsCount;
 
-    private static class Tags
+    public static class Tags
     {
       public const string RepoName = "repo_name";
       public const string RepoMethod = "repo_method";
@@ -18,7 +18,7 @@ namespace Rn.NetCore.Common.Metrics.Builders
       public const string HasParameters = "has_params";
     }
 
-    private static class Fields
+    public static class Fields
     {
       public const string QueryCount = "query_count";
       public const string ResultsCount = "results_count";

@@ -89,5 +89,23 @@ namespace Rn.NetCore.Common.Extensions
       // TODO: [TESTS] (StringExtensions.IgnoreCaseContains) Add tests
       return value.Contains(contains, StringComparison.InvariantCultureIgnoreCase);
     }
+
+    public static bool IgnoreCaseEndsWith(this string value, string endsWith)
+    {
+      // TODO: [TESTS] (StringExtensions.IgnoreCaseEndsWith) Add tests
+      return !string.IsNullOrWhiteSpace(value) && value.EndsWith(endsWith, StringComparison.InvariantCultureIgnoreCase);
+    }
+
+    public static bool IgnoreCaseStartsWith(this string value, string startsWith)
+    {
+      // TODO: [TESTS] (StringExtensions.IgnoreCaseStartsWith) Add tests
+      return !string.IsNullOrWhiteSpace(value) && value.StartsWith(startsWith, StringComparison.InvariantCultureIgnoreCase);
+    }
+
+    public static string FallbackTo(this string input, string fallback)
+    {
+      // TODO: [TESTS] (StringExtensions.FallbackTo) Add tests
+      return string.IsNullOrWhiteSpace(input.LowerTrim()) ? fallback : input;
+    }
   }
 }

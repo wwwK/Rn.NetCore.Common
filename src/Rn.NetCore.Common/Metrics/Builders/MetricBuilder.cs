@@ -105,6 +105,13 @@ namespace Rn.NetCore.Common.Metrics.Builders
       return this;
     }
 
+    public MetricBuilder WithField(string field, object value)
+    {
+      // TODO: [TESTS] (MetricBuilder.WithField) Add tests
+      Fields[MetricUtils.CleanFieldName(field)] = value;
+      return this;
+    }
+
     public MetricBuilder WithSuccess(bool success)
     {
       // TODO: [TESTS] (MetricBuilder.WithSuccess) Add tests

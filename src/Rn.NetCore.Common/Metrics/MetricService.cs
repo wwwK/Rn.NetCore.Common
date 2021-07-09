@@ -42,7 +42,7 @@ namespace Rn.NetCore.Common.Metrics
       IConfiguration configuration,
       IEnumerable<IMetricOutput> outputs)
     {
-      // TODO: [TESTS] (MetricService) Add tests
+      // TODO: [TESTS] (Metrics) Add tests
       _logger = logger;
       _dateTime = dateTime;
 
@@ -70,7 +70,7 @@ namespace Rn.NetCore.Common.Metrics
     // Interface methods
     public void SubmitPoint(MetricBuilder builder)
     {
-      // TODO: [TESTS] (MetricService.SubmitPoint) Add tests
+      // TODO: [TESTS] (Metrics.SubmitPoint) Add tests
       if (!Enabled) { return; }
 
       SubmitPointAsync(builder)
@@ -81,7 +81,7 @@ namespace Rn.NetCore.Common.Metrics
 
     public async Task SubmitPointAsync(MetricBuilder builder)
     {
-      // TODO: [TESTS] (MetricService.SubmitPointAsync) Add tests
+      // TODO: [TESTS] (Metrics.SubmitPointAsync) Add tests
       if (!Enabled) { return; }
 
       await SubmitPointAsync(builder.Build(_dateTime.UtcNow));
@@ -89,7 +89,7 @@ namespace Rn.NetCore.Common.Metrics
 
     public void SubmitPoint(LineProtocolPoint point)
     {
-      // TODO: [TESTS] (MetricService.SubmitPoint) Add tests
+      // TODO: [TESTS] (Metrics.SubmitPoint) Add tests
       if (!Enabled) { return; }
 
       SubmitPointAsync(point)
@@ -100,7 +100,7 @@ namespace Rn.NetCore.Common.Metrics
 
     public async Task SubmitPointAsync(LineProtocolPoint point)
     {
-      // TODO: [TESTS] (MetricService.SubmitPointAsync) Add tests
+      // TODO: [TESTS] (Metrics.SubmitPointAsync) Add tests
       if (!Enabled) { return; }
 
       // Ensure that we are working with a valid metric point
@@ -119,7 +119,7 @@ namespace Rn.NetCore.Common.Metrics
     // Point processing related methods
     private string WorkMetricBuilderType(LineProtocolPoint point)
     {
-      // TODO: [TESTS] (MetricService.WorkMetricBuilderType) Add tests
+      // TODO: [TESTS] (Metrics.WorkMetricBuilderType) Add tests
       if (!point.Tags.ContainsKey(CoreMetricTag.Source))
         return "unknown";
 
@@ -154,7 +154,7 @@ namespace Rn.NetCore.Common.Metrics
 
     private string ResolveMeasurement(LineProtocolPoint point)
     {
-      // TODO: [TESTS] (MetricService.ResolveMeasurement) Add tests
+      // TODO: [TESTS] (Metrics.ResolveMeasurement) Add tests
       var resolved = _config.MeasurementTemplate;
       var key = point.Measurement.Split(':')[1];
 
@@ -175,7 +175,7 @@ namespace Rn.NetCore.Common.Metrics
 
     private void FinalizePoint(LineProtocolPoint point)
     {
-      // TODO: [TESTS] (MetricService.FinalizePoint) Add tests
+      // TODO: [TESTS] (Metrics.FinalizePoint) Add tests
       var finalMeasurement = point.Measurement;
 
       if (point.Measurement.Contains("resolve:"))
@@ -202,7 +202,7 @@ namespace Rn.NetCore.Common.Metrics
     // Configuration related methods
     private MetricsConfig MapConfiguration(IConfiguration configuration)
     {
-      // TODO: [TESTS] (MetricService.MapConfiguration) Add tests
+      // TODO: [TESTS] (Metrics.MapConfiguration) Add tests
       var boundConfiguration = new MetricsConfig();
       var configurationSection = configuration.GetSection(ConfigKey);
 
@@ -221,7 +221,7 @@ namespace Rn.NetCore.Common.Metrics
 
     private static void ProcessConfiguration(MetricsConfig config)
     {
-      // TODO: [TESTS] (MetricService.ProcessConfiguration) Add tests
+      // TODO: [TESTS] (Metrics.ProcessConfiguration) Add tests
       if (!config.Enabled)
         return;
 
@@ -255,7 +255,7 @@ namespace Rn.NetCore.Common.Metrics
 
     private static void SetMeasurement(MetricsConfig config, MetricSource source, string builderType)
     {
-      // TODO: [TESTS] (MetricService.SetMeasurement) Add tests
+      // TODO: [TESTS] (Metrics.SetMeasurement) Add tests
       var key = source.ToString("G");
 
       if (config.Measurements.ContainsKey(key))
