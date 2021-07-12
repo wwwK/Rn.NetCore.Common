@@ -45,7 +45,8 @@ jobs:
         run: |
           $workingDir     = $PSScriptRoot
           $expression     = ""
-          $sqReportPaths  = "./artifacts/t1-coverage/**/coverage.opencover.xml"
+          $artifactsDir   = Join-Path $workingDir "artifacts"
+          $sqReportPaths  = "$artifactsDir/t1-coverage/**/coverage.opencover.xml"
           
           $sonarQubeParams = @(
             "/k:`"${{ secrets.SONAR_PROJECT }}`"",
@@ -53,14 +54,18 @@ jobs:
             "/d:sonar.login=`"${{ secrets.SONAR_TOKEN }}`"",
             "/d:sonar.cs.opencover.reportsPaths=`"$sqReportPaths`""
           )
+
+          # -outputRoot "D:\wrk\testing"
           
           $expression = ".\.sonar\scanner\dotnet-sonarscanner begin $sonarQubeParams"
           Invoke-Expression $expression
           
-          $expression = ".\ci-build.ps1"
+          $expression = ".\ci-build.ps1 -outputRoot `"$artifactsDir`""
+          Write-Host "Running: $expression"
           Invoke-Expression $expression
 
-          $expression = ".\ci-test.ps1"
+          $expression = ".\ci-test.ps1 -outputRoot `"$artifactsDir`""
+          Write-Host "Running: $expression"
           Invoke-Expression $expression
           
           $expression = ".\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login=`"${{ secrets.SONAR_TOKEN }}`""
@@ -71,19 +76,5 @@ jobs:
         uses: rohith/publish-nuget@v2
         with:
           PROJECT_FILE_PATH: src/Rn.NetCore.Common/Rn.NetCore.Common.csproj
-          NUGET_KEY: ${{ secrets.NUGET_API_KEY }}
-
-      - name: Publish Rn.NetCore.Metrics.Rabbit
-        id: publish_nuget
-        uses: rohith/publish-nuget@v2
-        with:
-          PROJECT_FILE_PATH: src/Rn.NetCore.Metrics.Rabbit/Rn.NetCore.Metrics.Rabbit.csproj
-          NUGET_KEY: ${{ secrets.NUGET_API_KEY }}
-
-      - name: Publish Rn.NetCore.WebCommon
-        id: publish_nuget
-        uses: rohith/publish-nuget@v2
-        with:
-          PROJECT_FILE_PATH: src/Rn.NetCore.WebCommon/Rn.NetCore.WebCommon.csproj
           NUGET_KEY: ${{ secrets.NUGET_API_KEY }}
           

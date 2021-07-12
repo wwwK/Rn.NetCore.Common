@@ -1,6 +1,11 @@
-$workingDir            = $PSScriptRoot;
+param (
+  $outputRoot = $PSScriptRoot
+)
+
+$workingDir            = Join-Path $PSScriptRoot "\";
+$outputRoot            = Join-Path $outputRoot "\";
 $sourceDir             = Join-Path $workingDir "src";
-$publishDir            = Join-Path $workingDir "artifacts";
+$publishDir            = Join-Path $outputRoot "artifacts";
 $toolsDir              = Join-Path $workingDir "tools";
 $testPublishDir        = Join-Path $publishDir "t1-publih";
 $testResultsDir        = Join-Path $publishDir "t1-results";
@@ -19,8 +24,9 @@ $currentPublishDir     = "";
 # ==============================================================
 #
 $cleanupDirectories = @();
-$cleanupDirectories += $publishDir;
-$cleanupDirectories += $toolsDir;
+$cleanupDirectories += $testPublishDir;
+$cleanupDirectories += $testCoverageDir;
+$cleanupDirectories += $testResultsDir;
  
 foreach ($cleanupDirectory in $cleanupDirectories) {
   if (Test-Path $cleanupDirectory) {
@@ -58,21 +64,14 @@ foreach ($testProject in $testProjects) {
   # Build test project
   $dllFileName = $testProject.BaseName + ".dll";
   $currentPublishDir = Join-Path $testPublishDir $testProject.BaseName
-  $buildCmd = "dotnet build `"$testProject`" --configuration $buildConfiguration";
-  #Write-Host "Running Build: $dllFileName";
-  #Invoke-Expression $buildCmd;
+  $testDllFile = Join-Path $currentPublishDir $dllFileName;
+  $buildCmd = "dotnet build `"$testProject`" --configuration $buildConfiguration --output `"$currentPublishDir`"";
+  Invoke-Expression $buildCmd;
 
-  $searchPath    = Join-Path $testProject.Directory "bin\$buildConfiguration\"
-  $dllFiles      = Get-ChildItem -Path $searchPath -Include $dllFileName -Recurse -File
-  if($dllFiles.count -eq 0) {
-    throw "Unable to find built DLL file";
+  if(!(Test-Path $testDllFile)) {
+    throw "Unable to find test DLL file: $testDllFile"
   }
-
-  $targetDllPath = $dllFiles | % { $_.FullName } | where { !($_ -match '\\ref\\') }
-  if(!(Test-Path $targetDllPath)){
-    throw "Unable to find test DLL file: $targetDllPath"
-  }
-
+  
   # Generate coverage report
   $testResultFileName   = Join-Path $testResultsDir "$( $testProject.BaseName )_results.trx";
   $coverageOutputDirTmp = Join-Path $testCoverageDir $testProject.BaseName;
@@ -90,7 +89,7 @@ foreach ($testProject in $testProjects) {
   
   # https://www.jetbrains.com/help/dotcover/dotCover__Console_Runner_Commands.html
   $coverletDotnetArguments = @(
-    $targetDllPath,
+    $testDllFile,
     "-t `"dotnet`"",
     "-a `"$dotnetTestTargetArgs`"",
     "-o $coverageOutputDir",
