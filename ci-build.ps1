@@ -1,6 +1,11 @@
-$workingDir         = $PSScriptRoot;
+param (
+  $outputRoot = $PSScriptRoot
+)
+
+$outputRoot         = Join-Path $outputRoot "\";
+$workingDir         = Join-Path $PSScriptRoot "\";
 $sourceDir          = Join-Path $workingDir "src";
-$artifactDir        = Join-Path $workingDir "artifacts";
+$artifactDir        = Join-Path $outputRoot "artifacts";
 $publishDir         = Join-Path $artifactDir "publish";
 $slnCommon          = Join-Path $sourceDir "Rn.NetCore.Common";
 $slnWebCommon       = Join-Path $sourceDir "Rn.NetCore.WebCommon";
@@ -8,6 +13,7 @@ $slnMetricsRabbit   = Join-Path $sourceDir "Rn.NetCore.Metrics.Rabbit";
 $buildConfiguration = "Release";
 $buildCmd           = "";
 $curPublishDir      = "";
+
 
 # =============================================================================
 # Build projects
