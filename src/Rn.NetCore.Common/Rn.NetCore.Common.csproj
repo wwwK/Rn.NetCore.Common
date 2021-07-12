@@ -4,11 +4,11 @@
     <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>Rn.NetCore.Common</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>5.0.1.103</Version>
+    <Version>5.0.1.104</Version>
     <Company>Richard Niemand</Company>
     <Description>Core libs for my various projects</Description>
-    <AssemblyVersion>5.0.1.103</AssemblyVersion>
-    <FileVersion>5.0.1.103</FileVersion>
+    <AssemblyVersion>5.0.1.104</AssemblyVersion>
+    <FileVersion>5.0.1.104</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Authors>Richard Niemand</Authors>
     <NeutralLanguage>en</NeutralLanguage>
