@@ -1,24 +1,24 @@
 param (
-  $outputRoot = $PSScriptRoot
+  $output         = $PSScriptRoot,
+  $project        = "Rn.NetCore.Common",
+  $configuration  = "Release"
 )
 
-$outputRoot         = Join-Path $outputRoot "\";
-$workingDir         = Join-Path $PSScriptRoot "\";
-$sourceDir          = Join-Path $workingDir "src";
+$outputRoot         = Join-Path $output "\";
+$workingRoot        = Join-Path $PSScriptRoot "\";
+$sourceDir          = Join-Path $workingRoot "src";
+$projectRootDir     = Join-Path $sourceDir $project;
+
 $artifactDir        = Join-Path $outputRoot "artifacts";
-$publishDir         = Join-Path $artifactDir "publish";
-$slnCommon          = Join-Path $sourceDir "Rn.NetCore.Common";
-$buildConfiguration = "Release";
-$buildCmd           = "";
-$curPublishDir      = "";
+$publisRoot         = Join-Path $artifactDir "publish";
+$publishDir         = Join-Path $publisRoot $project;
+$fullPublishDir     = Join-Path $publishDir "\";
 
 
 # =============================================================================
-# Build projects
+# Build project
 # =============================================================================
 #
-$curPublishDir    = Join-Path $publishDir "Rn.NetCore.Common\";
-$buildCmd         = "dotnet build $slnCommon --configuration $buildConfiguration --output `"$curPublishDir`""
+$buildCmd         = "dotnet build $projectRootDir --configuration $configuration --output `"$fullPublishDir`""
 Write-Host        "Running Build: $buildCmd"
 Invoke-Expression $buildCmd;
-
