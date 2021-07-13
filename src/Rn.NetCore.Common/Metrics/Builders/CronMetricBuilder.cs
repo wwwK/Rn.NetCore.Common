@@ -9,8 +9,8 @@ namespace Rn.NetCore.Common.Metrics.Builders
   {
     private readonly MetricBuilder _builder;
     private int _queryCount, _resultsCount;
-    private readonly List<int> _customInt = new List<int> { 0, 0, 0, 0, 0 };
-    private readonly List<long> _customLong = new List<long> { 0, 0, 0 };
+    private readonly List<int> _customInt = new() { 0, 0, 0, 0, 0 };
+    private readonly List<long> _customLong = new() { 0, 0, 0 };
 
     public static class Tags
     {
@@ -30,7 +30,6 @@ namespace Rn.NetCore.Common.Metrics.Builders
     // Constructors
     public CronMetricBuilder(string measurement = null)
     {
-      // TODO: [TESTS] (CronMetricBuilder) Add tests
       _builder = new MetricBuilder(MetricSource.CronJob, measurement)
         // Tags
         .WithTag(Tags.CronClass, string.Empty)
